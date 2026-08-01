@@ -200,19 +200,54 @@
             <td class="p-3 font-bold text-white">${p.nama}</td>
             <td class="p-3">Rp ${p.harga.toLocaleString('id-ID')}</td>
             <td class="p-3">
+              <span class="font-mono font-bold ${p.terjual >= p.kuota ? 'text-amber-400' : 'text-emerald-400'}">
+                ${p.terjual} / ${p.kuota}
+              </span>
+              <span class="text-[10px] text-slate-500 block">Terjual</span>
+            </td>
+            <td class="p-3">
               <span class="px-2.5 py-1 text-[10px] font-bold rounded-full ${p.status === 'OPEN' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'}">
                 ${p.status}
               </span>
             </td>
-            <td class="p-3">
+            <td class="p-3 space-x-1">
               <button onclick="toggleProductStatus('${p.id}', '${p.status === 'OPEN' ? 'CLOSED' : 'OPEN'}')" class="text-[11px] px-3 py-1 rounded-xl font-semibold border ${p.status === 'OPEN' ? 'border-rose-500/30 text-rose-400 hover:bg-rose-500/10' : 'border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10'} transition">
                 Set ${p.status === 'OPEN' ? 'CLOSED 🚫' : 'OPEN ✅'}
+              </button>
+              <button onclick="editKuotaPrompt('${p.id}', ${p.kuota})" class="text-[11px] px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl transition">
+                Set Kuota
               </button>
             </td>
           </tr>
         `).join('');
         return true;
       } catch(e) { return false; }
+    }
+
+    async function addNewProductPrompt() {
+      const nama = prompt("Nama Item/Produk Baru:");
+      if(!nama) return;
+      const harga = prompt("Harga (Angka saja, misal 250000):");
+      if(!harga) return;
+      const kuota = prompt("Batas Kuota PO (misal 20):", "20");
+      if(!kuota) return;
+
+      await fetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'saveProduct', pin: currentPin, nama: nama, harga: harga, kuota: kuota, status: 'OPEN' })
+      });
+      refreshAll();
+    }
+
+    async function editKuotaPrompt(id, currentKuota) {
+      const newKuota = prompt("Masukkan Batas Kuota Baru:", currentKuota);
+      if(!newKuota) return;
+
+      await fetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'saveProduct', pin: currentPin, id: id, kuota: newKuota })
+      });
+      refreshAll();
     }
 
     async function loadOrders() {
