@@ -212,7 +212,7 @@
           document.getElementById('payOrderId').innerText = data.orderId;
           document.getElementById('payTotal').innerText = `Rp ${data.totalBayar.toLocaleString('id-ID')}`;
           const waMsg = `Halo Admin, saya sudah buat order PO ${data.orderId} senilai Rp${data.totalBayar.toLocaleString('id-ID')}. Mohon dicek.`;
-          document.getElementById('waConfirmBtn').href = `https://wa.me/6281234567890?text=${encodeURIComponent(waMsg)}`;
+          document.getElementById('waConfirmBtn').href = `https://wa.me/6285111335695?text=${encodeURIComponent(waMsg)}`;
           toggleSection('payment');
         }
       } catch(err) {
