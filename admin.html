@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard Open PO</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+  <div class="max-w-6xl mx-auto">
+    
+    <div id="loginBox" class="max-w-md mx-auto bg-white p-6 rounded-xl shadow-md mt-10">
+      <h2 class="text-xl font-bold mb-4 text-center">Login Penjual</h2>
+      <input type="password" id="pinInput" placeholder="Masukkan PIN Admin" class="w-full border p-2.5 rounded-lg mb-4">
+      <button onclick="loginAdmin()" class="w-full bg-blue-600 text-white font-bold py-2.5 rounded-lg">Masuk</button>
+    </div>
+
+    <div id="adminDash" class="hidden space-y-6">
+      <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow border">
+        <h1 class="text-2xl font-bold">📦 Admin PO Management</h1>
+        <button onclick="refreshAll()" class="bg-blue-600 text-white text-sm px-4 py-2 rounded-lg">Refresh Data</button>
+      </div>
+
+      <div class="bg-white p-6 rounded-xl shadow border">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-bold">🏷️ Kelola Produk & Buka/Tutup PO</h2>
+          <button onclick="addNewProductPrompt()" class="bg-green-600 text-white text-xs px-3 py-2 rounded-lg">+ Tambah Produk</button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm border">
+            <thead class="bg-gray-50 border-b">
+              <tr>
+                <th class="p-2">ID</th>
+                <th class="p-2">Nama Produk</th>
+                <th class="p-2">Harga</th>
+                <th class="p-2">Status PO</th>
+                <th class="p-2">Aksi Status</th>
+              </tr>
+            </thead>
+            <tbody id="productTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-xl shadow border">
+        <h2 class="text-lg font-bold mb-4">📋 Daftar Pesanan Masuk</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm border">
+            <thead class="bg-gray-50 border-b">
+              <tr>
+                <th class="p-2">ID / Tgl</th>
+                <th class="p-2">Pembeli</th>
+                <th class="p-2">Produk</th>
+                <th class="p-2">Total</th>
+                <th class="p-2">Status Bayar</th>
+                <th class="p-2">Pengiriman</th>
+                <th class="p-2">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="orderTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbze1RTE1AZAMP_BpgB41hkHYOy6kpCwFUZv_AItCL7CXkzL-eG9K4uLzL-WUJKl31iF/exec";
+    let currentPin = "";
+
+    async function loginAdmin() {
+      currentPin = document.getElementById('pinInput').value;
+      const ok = await refreshAll();
+      if(ok) {
+        document.getElementById('loginBox').classList.add('hidden');
+        document.getElementById('adminDash').classList.remove('hidden');
+      }
+    }
+
+    async function refreshAll() {
+      const pOk = await loadProducts();
+      const oOk = await loadOrders();
+      return pOk && oOk;
+    }
+
+    async function loadProducts() {
+      try {
+        const res = await fetch(`${GAS_URL}?action=getAllProducts&pin=${currentPin}`);
+        const data = await res.json();
+        if(!data.success) return false;
+
+        document.getElementById('productTableBody').innerHTML = data.products.map(p => `
+          <tr class="border-b">
+            <td class="p-2 font-mono text-xs">${p.id}</td>
+            <td class="p-2 font-bold">${p.nama}</td>
+            <td class="p-2">Rp ${p.harga.toLocaleString('id-ID')}</td>
+            <td class="p-2">
+              <span class="px-2 py-1 text-xs font-bold rounded ${p.status === 'OPEN' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+                ${p.status}
+              </span>
+            </td>
+            <td class="p-2">
+              <button onclick="toggleProductStatus('${p.id}', '${p.status === 'OPEN' ? 'CLOSED' : 'OPEN'}')" class="text-xs px-2 py-1 rounded border ${p.status === 'OPEN' ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}">
+                Set ${p.status === 'OPEN' ? 'CLOSED 🚫' : 'OPEN ✅'}
+              </button>
+            </td>
+          </tr>
+        `).join('');
+        return true;
+      } catch(e) { return false; }
+    }
+
+    async function loadOrders() {
+      try {
+        const res = await fetch(`${GAS_URL}?action=getAdminData&pin=${currentPin}`);
+        const data = await res.json();
+        if(!data.success) return false;
+
+        document.getElementById('orderTableBody').innerHTML = data.orders.map(o => `
+          <tr class="border-b">
+            <td class="p-2"><b>${o.orderId}</b><br><span class="text-xs text-gray-400">${o.tanggal}</span></td>
+            <td class="p-2"><b>${o.nama}</b><br><span class="text-xs text-gray-500">${o.wa}</span></td>
+            <td class="p-2">${o.produk} (${o.jumlah}x)</td>
+            <td class="p-2 font-bold text-blue-600">Rp ${Number(o.totalBayar).toLocaleString('id-ID')}</td>
+            <td class="p-2">
+              <span class="px-2 py-0.5 rounded text-xs font-bold ${o.statusBayar === 'Lunas' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${o.statusBayar}</span>
+            </td>
+            <td class="p-2"><span class="bg-gray-100 px-2 py-0.5 rounded text-xs">${o.statusPengiriman}</span></td>
+            <td class="p-2 space-y-1">
+              ${o.statusBayar !== 'Lunas' ? `<button onclick="updateOrder('${o.orderId}', 'Lunas', null)" class="bg-green-600 text-white text-xs px-2 py-1 rounded block">Lunas</button>` : ''}
+              <button onclick="inputResi('${o.orderId}')" class="bg-blue-600 text-white text-xs px-2 py-1 rounded block">Resi</button>
+            </td>
+          </tr>
+        `).join('');
+        return true;
+      } catch(e) { return false; }
+    }
+
+    async function toggleProductStatus(id, newStatus) {
+      await fetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'saveProduct', pin: currentPin, id: id, status: newStatus })
+      });
+      refreshAll();
+    }
+
+    async function addNewProductPrompt() {
+      const nama = prompt("Nama Produk Baru:");
+      if(!nama) return;
+      const harga = prompt("Harga Produk (Angka saja, misal 250000):");
+      if(!harga) return;
+
+      await fetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'saveProduct', pin: currentPin, nama: nama, harga: harga, status: 'OPEN' })
+      });
+      refreshAll();
+    }
+
+    async function updateOrder(orderId, statusBayar, resi) {
+      await fetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'updateOrder', pin: currentPin, orderId: orderId, statusBayar: statusBayar, statusPengiriman: resi ? 'Shipped' : undefined, noResi: resi })
+      });
+      refreshAll();
+    }
+
+    function inputResi(orderId) {
+      const resi = prompt("Masukkan Nomor Resi:");
+      if(resi) updateOrder(orderId, null, resi);
+    }
+  </script>
+</body>
+</html>
