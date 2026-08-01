@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Pre-Order Official</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen">
+
+  <nav class="bg-blue-600 text-white p-4 shadow-md flex justify-between items-center max-w-2xl mx-auto rounded-b-xl">
+    <h1 class="font-bold text-lg">🛍️ Open PO Store</h1>
+    <button onclick="toggleSection('track')" class="text-sm bg-blue-700 hover:bg-blue-800 px-3 py-1.5 rounded-lg">Cek Pesanan</button>
+  </nav>
+
+  <div class="max-w-2xl mx-auto p-4">
+    
+    <div id="section-form" class="bg-white p-6 rounded-2xl shadow-sm border mt-4">
+      <h2 class="text-xl font-bold mb-1">Form Pemesanan PO</h2>
+      <p class="text-sm text-gray-500 mb-6">Pilih produk dan isi data pemesanan kamu.</p>
+
+      <form id="poForm" onsubmit="submitOrder(event)" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium">Pilih Produk</label>
+          <select id="produk" class="w-full border p-2.5 rounded-lg mt-1" required>
+            <option value="">Memuat daftar produk...</option>
+          </select>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium">Jumlah</label>
+          <input type="number" id="jumlah" value="1" min="1" class="w-full border p-2.5 rounded-lg mt-1" required>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium">Nama Lengkap</label>
+          <input type="text" id="nama" placeholder="Contoh: Adiib" class="w-full border p-2.5 rounded-lg mt-1" required>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium">No. WhatsApp</label>
+            <input type="tel" id="wa" placeholder="08123456789" class="w-full border p-2.5 rounded-lg mt-1" required>
+          </div>
+          <div>
+            <label class="block text-sm font-medium">Email (Untuk Kwitansi)</label>
+            <input type="email" id="email" placeholder="nama@email.com" class="w-full border p-2.5 rounded-lg mt-1" required>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium">Catatan / Alamat Pengiriman</label>
+          <textarea id="catatan" rows="3" class="w-full border p-2.5 rounded-lg mt-1" placeholder="Alamat lengkap..."></textarea>
+        </div>
+
+        <button type="submit" id="btnSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-md transition">
+          Lanjut ke Pembayaran ➔
+        </button>
+      </form>
+    </div>
+
+    <div id="section-payment" class="hidden bg-white p-6 rounded-2xl shadow-sm border mt-4 text-center">
+      <div class="text-green-500 text-4xl mb-2">✅</div>
+      <h2 class="text-xl font-bold">Pesanan Berhasil Dibuat!</h2>
+      <p class="text-sm text-gray-500">ID Pesanan Anda: <b id="payOrderId" class="text-blue-600"></b></p>
+
+      <div class="bg-yellow-50 border border-yellow-200 p-4 rounded-xl my-4 text-left">
+        <p class="text-xs text-yellow-800 font-semibold uppercase">Total Pembayaran (Termasuk Kode Unik):</p>
+        <div class="text-2xl font-black text-yellow-900 mt-1" id="payTotal">Rp 0</div>
+        <p class="text-xs text-red-600 mt-1">*Transfer persis hingga 3 digit terakhir untuk verifikasi otomatis.</p>
+      </div>
+
+      <div class="border-t pt-4 text-left space-y-3 text-sm">
+        <p class="font-bold">Pilihan Rekening Pembayaran:</p>
+        <div class="p-3 border rounded-lg bg-gray-50">
+          <p class="font-semibold">Bank BCA</p>
+          <p class="text-gray-600">No. Rek: <b>1234-5678-90</b> a.n Admin PO</p>
+        </div>
+      </div>
+
+      <div class="mt-6 space-y-2">
+        <a id="waConfirmBtn" target="_blank" class="block w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-lg">
+          Konfirmasi via WhatsApp
+        </a>
+        <button onclick="location.reload()" class="block w-full text-gray-500 text-sm py-2">Kembali ke Utama</button>
+      </div>
+    </div>
+
+    <div id="section-track" class="hidden bg-white p-6 rounded-2xl shadow-sm border mt-4">
+      <h2 class="text-xl font-bold mb-4">Cek Status Pesanan</h2>
+      <div class="flex gap-2 mb-4">
+        <input type="text" id="trackQuery" placeholder="Masukkan ID Pesanan / No. WA" class="w-full border p-2.5 rounded-lg">
+        <button onclick="trackOrder()" class="bg-blue-600 text-white px-4 rounded-lg font-bold">Cek</button>
+      </div>
+      <div id="trackResult"></div>
+      <button onclick="toggleSection('form')" class="mt-4 text-sm text-blue-600 font-semibold">← Kembali ke Form</button>
+    </div>
+
+  </div>
+
+  <script>
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbze1RTE1AZAMP_BpgB41hkHYOy6kpCwFUZv_AItCL7CXkzL-eG9K4uLzL-WUJKl31iF/exec";
+
+    window.addEventListener('DOMContentLoaded', loadPublicProducts);
+
+    function toggleSection(sec) {
+      document.getElementById('section-form').classList.add('hidden');
+      document.getElementById('section-payment').classList.add('hidden');
+      document.getElementById('section-track').classList.add('hidden');
+      document.getElementById(`section-${sec}`).classList.remove('hidden');
+    }
+
+    async function loadPublicProducts() {
+      const select = document.getElementById('produk');
+      const btn = document.getElementById('btnSubmit');
+
+      try {
+        const res = await fetch(`${GAS_URL}?action=getPublicProducts`);
+        const data = await res.json();
+
+        if (data.products && data.products.length > 0) {
+          select.innerHTML = data.products.map(p => 
+            `<option value="${p.nama}" data-harga="${p.harga}">${p.nama} - Rp ${p.harga.toLocaleString('id-ID')}</option>`
+          ).join('');
+          btn.disabled = false;
+          btn.classList.remove('bg-gray-400');
+          btn.classList.add('bg-blue-600');
+          btn.innerText = "Lanjut ke Pembayaran ➔";
+        } else {
+          select.innerHTML = "<option disabled selected>🚫 PRE-ORDER SAAT INI SEDANG DITUTUP 🚫</option>";
+          btn.disabled = true;
+          btn.classList.remove('bg-blue-600');
+          btn.classList.add('bg-gray-400');
+          btn.innerText = "PO Sedang Ditutup";
+        }
+      } catch (e) {
+        select.innerHTML = "<option>Gagal memuat produk</option>";
+      }
+    }
+
+    async function submitOrder(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmit');
+      btn.innerText = "Memproses...";
+      btn.disabled = true;
+
+      const select = document.getElementById('produk');
+      const selectedOption = select.options[select.selectedIndex];
+      const harga = selectedOption.getAttribute('data-harga');
+
+      const payload = {
+        action: 'createOrder',
+        produk: selectedOption.value,
+        harga: harga,
+        jumlah: document.getElementById('jumlah').value,
+        nama: document.getElementById('nama').value,
+        wa: document.getElementById('wa').value,
+        email: document.getElementById('email').value,
+        catatan: document.getElementById('catatan').value
+      };
+
+      try {
+        const res = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) });
+        const data = await res.json();
+
+        if(data.success) {
+          document.getElementById('payOrderId').innerText = data.orderId;
+          document.getElementById('payTotal').innerText = `Rp ${data.totalBayar.toLocaleString('id-ID')}`;
+          const waMsg = `Halo Admin, saya sudah buat order PO ${data.orderId} senilai Rp ${data.totalBayar.toLocaleString('id-ID')}. Mohon dicek.`;
+          document.getElementById('waConfirmBtn').href = `https://wa.me/6281234567890?text=${encodeURIComponent(waMsg)}`;
+          toggleSection('payment');
+        }
+      } catch(err) {
+        alert("Terjadi kesalahan.");
+      } finally {
+        btn.innerText = "Lanjut ke Pembayaran ➔";
+        btn.disabled = false;
+      }
+    }
+
+    async function trackOrder() {
+      const q = document.getElementById('trackQuery').value;
+      if(!q) return alert("Isi ID Pesanan atau WhatsApp!");
+      const resDiv = document.getElementById('trackResult');
+      resDiv.innerHTML = "<p class='text-gray-500'>Mencari...</p>";
+
+      const res = await fetch(`${GAS_URL}?action=trackOrder&query=${q}`);
+      const data = await res.json();
+
+      if(data.orders && data.orders.length > 0) {
+        resDiv.innerHTML = data.orders.map(o => `
+          <div class="border p-4 rounded-xl mb-3 bg-gray-50 text-sm">
+            <div class="flex justify-between font-bold border-b pb-2 mb-2">
+              <span>${o.orderId}</span>
+              <span class="text-blue-600">${o.statusBayar}</span>
+            </div>
+            <p><b>Produk:</b> ${o.produk} (${o.jumlah}x)</p>
+            <p><b>Status PO:</b> ${o.statusPengiriman}</p>
+            <p><b>No Resi:</b> ${o.noResi !== '-' ? `<b class="text-green-600">${o.noResi}</b>` : 'Belum Ada'}</p>
+          </div>
+        `).join('');
+      } else {
+        resDiv.innerHTML = "<p class='text-red-500'>Tidak ditemukan.</p>";
+      }
+    }
+  </script>
+</body>
+</html>
