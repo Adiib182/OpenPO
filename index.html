@@ -135,27 +135,31 @@
           </button>
         </div>
 
-        <div id="paymentQris" class="hidden p-5 rounded-2xl border border-slate-800 bg-slate-950/80 text-center space-y-3 relative overflow-hidden">
-          <div class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-            <span>QRIS ALL PAYMENT</span>
-          </div>
+        <div id="paymentQris" class="hidden flex flex-col items-center justify-center p-6 rounded-2xl border border-slate-800 bg-slate-950/80 text-center space-y-4">
+  
+  <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+    <i data-lucide="qr-code" class="w-3 h-3"></i>
+    <span>QRIS ALL PAYMENT</span>
+  </div>
 
-          <div class="relative inline-block p-3 bg-white rounded-2xl shadow-xl shadow-violet-500/10">
-            <img id="qrisImg" src="https://i.ibb.co.com/ccfx2QW9/IMG-20260801-WA0000.jpg" alt="QRIS Toko" class="w-48 h-48 mx-auto rounded-lg object-contain">
-          </div>
+  <div class="flex items-center justify-center p-3 bg-white rounded-2xl shadow-xl shadow-violet-500/10 border border-slate-200">
+    <img id="qrisImg" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=QRIS_STORE_DEMO" alt="QRIS Toko" class="w-44 h-44 object-contain rounded-lg">
+  </div>
 
-          <p class="text-[11px] text-slate-400">Screenshot gambar QRIS di atas untuk di-upload/scan pada m-Banking atau E-Wallet pilihanmu.</p>
+  <p class="text-[11px] text-slate-400 max-w-xs leading-relaxed">
+    Screenshot atau scan gambar QRIS di atas melalui m-Banking atau E-Wallet pilihanmu.
+  </p>
 
-          <div class="pt-2 border-t border-slate-800/80 flex flex-wrap justify-center gap-1.5 text-[9px] font-bold text-slate-400">
-            <span class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded-md">BCA</span>
-            <span class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded-md">Mandiri</span>
-            <span class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded-md">GoPay</span>
-            <span class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded-md">OVO</span>
-            <span class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded-md">DANA</span>
-            <span class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded-md">ShopeePay</span>
-          </div>
-        </div>
-      </div>
+  <div class="w-full pt-3 border-t border-slate-800/80 flex flex-wrap justify-center items-center gap-1.5 text-[9px] font-bold text-slate-400">
+    <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg">BCA</span>
+    <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg">Mandiri</span>
+    <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg">GoPay</span>
+    <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg">OVO</span>
+    <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg">DANA</span>
+    <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg">ShopeePay</span>
+  </div>
+ </div>
+</div>
 
       <div class="space-y-2">
         <a id="waConfirmBtn" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 transition">
