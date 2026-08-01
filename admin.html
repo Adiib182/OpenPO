@@ -223,10 +223,12 @@
 
         allOrdersData = data.orders; // Simpan data ke variabel global
 
-        document.getElementById('orderTableBody').innerHTML = data.orders.map(o => `
+        document.getElementById('orderTableBody').innerHTML = data.orders.map(o => {
+          const safeId = String(o.orderId).replace(/'/g, "\\'");
+          return `
           <tr class="hover:bg-slate-800/30 transition">
             <td class="p-3">
-              <button onclick="showDetail('${o.orderId}')" class="font-mono font-bold text-violet-400 hover:underline text-left block">
+              <button onclick="showDetail('${safeId}')" class="font-mono font-bold text-violet-400 hover:underline text-left block">
                 ${o.orderId}
               </button>
               <span class="text-[10px] text-slate-500">${o.tanggal}</span>
@@ -239,39 +241,49 @@
             </td>
             <td class="p-3"><span class="bg-slate-800 px-2.5 py-1 rounded-lg text-[10px] text-slate-300 font-mono">${o.statusPengiriman}</span></td>
             <td class="p-3 space-x-1 flex items-center">
-              <button onclick="showDetail('${o.orderId}')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-bold px-2 py-1 rounded-lg">🔍 Detail</button>
-              ${o.statusBayar !== 'Lunas' ? `<button onclick="updateOrder('${o.orderId}', 'Lunas', null)" class="bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg">Lunas</button>` : ''}
-              <button onclick="inputResi('${o.orderId}')" class="bg-violet-600 hover:bg-violet-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg">Resi</button>
+              <button onclick="showDetail('${safeId}')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-bold px-2 py-1 rounded-lg">🔍 Detail</button>
+              ${o.statusBayar !== 'Lunas' ? `<button onclick="updateOrder('${safeId}', 'Lunas', null)" class="bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg">Lunas</button>` : ''}
+              <button onclick="inputResi('${safeId}')" class="bg-violet-600 hover:bg-violet-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg">Resi</button>
             </td>
           </tr>
-        `).join('');
+        `}).join('');
         return true;
       } catch(e) { return false; }
     }
 
-    // FUNGSI TAMPILKAN MODAL DETAIL
+    // FUNGSI TAMPILKAN MODAL DETAIL (DIPERBAIKI)
     function showDetail(orderId) {
-      const order = allOrdersData.find(o => o.orderId === orderId);
+      // Pastikan pencarian ID menggunakan pembandingan String
+      const order = allOrdersData.find(o => String(o.orderId) === String(orderId));
       if(!order) return alert("Data pesanan tidak ditemukan.");
 
-      document.getElementById('modalOrderId').innerText = order.orderId;
-      document.getElementById('modalTanggal').innerText = order.tanggal;
-      document.getElementById('modalNama').innerText = order.nama;
-      document.getElementById('modalWa').innerText = order.wa;
-      document.getElementById('modalEmail').innerText = order.email;
+      document.getElementById('modalOrderId').innerText = order.orderId || '-';
+      document.getElementById('modalTanggal').innerText = order.tanggal || '-';
+      document.getElementById('modalNama').innerText = order.nama || '-';
+      
+      // Konversi wa ke String agar aman
+      const waString = String(order.wa || '');
+      document.getElementById('modalWa').innerText = waString || '-';
+      document.getElementById('modalEmail').innerText = order.email || '-';
       document.getElementById('modalCatatan').innerText = order.catatan || "-";
-      document.getElementById('modalProduk').innerText = order.produk;
-      document.getElementById('modalJumlah').innerText = `${order.jumlah} Pcs`;
-      document.getElementById('modalKodeUnik').innerText = `+${order.kodeUnik}`;
-      document.getElementById('modalTotal').innerText = `Rp ${Number(order.totalBayar).toLocaleString('id-ID')}`;
+      document.getElementById('modalProduk').innerText = order.produk || '-';
+      document.getElementById('modalJumlah').innerText = `${order.jumlah || 1} Pcs`;
+      document.getElementById('modalKodeUnik').innerText = `+${order.kodeUnik || 0}`;
+      
+      const total = Number(order.totalBayar || 0);
+      document.getElementById('modalTotal').innerText = `Rp ${isNaN(total) ? '0' : total.toLocaleString('id-ID')}`;
 
-      // Set link WA langsung ke pembeli
-      const cleanWa = order.wa.replace(/^0/, '62').replace(/\D/g, '');
+      // Buat format nomor WA internasional yang aman
+      let cleanWa = waString.replace(/\D/g, '');
+      if (cleanWa.startsWith('0')) {
+        cleanWa = '62' + cleanWa.slice(1);
+      }
       const waText = `Halo kak ${order.nama}, mengenai pesanan Open PO dengan ID ${order.orderId}:`;
       document.getElementById('modalWaBtn').href = `https://wa.me/${cleanWa}?text=${encodeURIComponent(waText)}`;
 
+      // Buka Modal Popup
       document.getElementById('detailModal').classList.remove('hidden');
-      lucide.createIcons();
+      if (window.lucide) lucide.createIcons();
     }
 
     function closeDetail() {
