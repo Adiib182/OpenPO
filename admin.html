@@ -69,7 +69,7 @@
       <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl">
         <div class="mb-4">
           <h2 class="text-lg font-bold text-white">Pesanan Masuk</h2>
-          <p class="text-xs text-slate-400">Verifikasi transfer dan update nomor resi pengiriman</p>
+          <p class="text-xs text-slate-400">Klik Order ID / tombol Detail untuk melihat data lengkap & alamat pembeli</p>
         </div>
 
         <div class="overflow-x-auto">
@@ -82,7 +82,7 @@
                 <th class="p-3">Total Transfer</th>
                 <th class="p-3">Status Bayar</th>
                 <th class="p-3">Status Kirim</th>
-                <th class="p-3 rounded-r-xl">Aksi Cepat</th>
+                <th class="p-3 rounded-r-xl">Aksi</th>
               </tr>
             </thead>
             <tbody id="orderTableBody" class="divide-y divide-slate-800/50"></tbody>
@@ -94,9 +94,81 @@
 
   </div>
 
+  <div id="detailModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-3xl p-6 shadow-2xl relative space-y-4 max-h-[90vh] overflow-y-auto">
+      
+      <div class="flex justify-between items-start border-b border-slate-800 pb-4">
+        <div>
+          <span id="modalOrderId" class="font-mono font-bold text-violet-400 text-lg">PO-000000</span>
+          <p id="modalTanggal" class="text-xs text-slate-500">Tanggal Order</p>
+        </div>
+        <button onclick="closeDetail()" class="text-slate-400 hover:text-white p-1 rounded-xl bg-slate-800/50">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div class="bg-slate-950/60 p-4 rounded-2xl border border-slate-800 space-y-2">
+          <p class="text-[10px] font-bold text-violet-400 uppercase tracking-wider">Informasi Pembeli</p>
+          <div class="grid grid-cols-2 gap-2 text-slate-300">
+            <div>
+              <p class="text-slate-500">Nama Lengkap:</p>
+              <p id="modalNama" class="font-bold text-white text-sm">-</p>
+            </div>
+            <div>
+              <p class="text-slate-500">WhatsApp:</p>
+              <p id="modalWa" class="font-mono text-white">-</p>
+            </div>
+            <div class="col-span-2">
+              <p class="text-slate-500">Email:</p>
+              <p id="modalEmail" class="text-white font-mono">-</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-slate-950/60 p-4 rounded-2xl border border-slate-800 space-y-2 relative">
+          <div class="flex justify-between items-center">
+            <p class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Alamat & Catatan Pengiriman</p>
+            <button onclick="copyAddress()" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-lg flex items-center gap-1 transition">
+              <i data-lucide="copy" class="w-3 h-3"></i> Salin Alamat
+            </button>
+          </div>
+          <p id="modalCatatan" class="text-white whitespace-pre-line text-xs bg-slate-900 p-3 rounded-xl border border-slate-800/80 font-sans leading-relaxed">-</p>
+        </div>
+
+        <div class="bg-slate-950/60 p-4 rounded-2xl border border-slate-800 space-y-2">
+          <p class="text-[10px] font-bold text-violet-400 uppercase tracking-wider">Rincian Transaksi</p>
+          <div class="flex justify-between items-center text-slate-300">
+            <span id="modalProduk" class="font-bold text-white">-</span>
+            <span id="modalJumlah" class="bg-slate-800 px-2 py-0.5 rounded text-[11px] font-mono">-</span>
+          </div>
+          <div class="flex justify-between items-center text-slate-400 pt-2 border-t border-slate-800/80">
+            <span>Kode Unik:</span>
+            <span id="modalKodeUnik" class="font-mono font-bold text-amber-400">-</span>
+          </div>
+          <div class="flex justify-between items-center text-slate-200 text-sm pt-1">
+            <span class="font-bold">Total Pembayaran:</span>
+            <span id="modalTotal" class="font-mono font-extrabold text-emerald-400 text-base">-</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-2 flex gap-2">
+        <a id="modalWaBtn" target="_blank" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-3 rounded-2xl flex items-center justify-center gap-2 transition">
+          <i data-lucide="message-square" class="w-4 h-4"></i> Chat WA Pembeli
+        </a>
+        <button onclick="closeDetail()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold px-5 py-3 rounded-2xl transition">
+          Tutup
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbze1RTE1AZAMP_BpgB41hkHYOy6kpCwFUZv_AItCL7CXkzL-eG9K4uLzL-WUJKl31iF/exec";
     let currentPin = "";
+    let allOrdersData = []; // Menyimpan semua data pesanan secara global
 
     window.addEventListener('DOMContentLoaded', () => lucide.createIcons());
 
@@ -149,9 +221,16 @@
         const data = await res.json();
         if(!data.success) return false;
 
+        allOrdersData = data.orders; // Simpan data ke variabel global
+
         document.getElementById('orderTableBody').innerHTML = data.orders.map(o => `
           <tr class="hover:bg-slate-800/30 transition">
-            <td class="p-3"><b class="font-mono text-violet-400">${o.orderId}</b><br><span class="text-[10px] text-slate-500">${o.tanggal}</span></td>
+            <td class="p-3">
+              <button onclick="showDetail('${o.orderId}')" class="font-mono font-bold text-violet-400 hover:underline text-left block">
+                ${o.orderId}
+              </button>
+              <span class="text-[10px] text-slate-500">${o.tanggal}</span>
+            </td>
             <td class="p-3"><b class="text-white">${o.nama}</b><br><span class="text-[10px] text-slate-500">${o.wa}</span></td>
             <td class="p-3">${o.produk} (${o.jumlah}x)</td>
             <td class="p-3 font-bold text-emerald-400 font-mono">Rp ${Number(o.totalBayar).toLocaleString('id-ID')}</td>
@@ -159,14 +238,54 @@
               <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${o.statusBayar === 'Lunas' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}">${o.statusBayar}</span>
             </td>
             <td class="p-3"><span class="bg-slate-800 px-2.5 py-1 rounded-lg text-[10px] text-slate-300 font-mono">${o.statusPengiriman}</span></td>
-            <td class="p-3 space-x-1">
-              ${o.statusBayar !== 'Lunas' ? `<button onclick="updateOrder('${o.orderId}', 'Lunas', null)" class="bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg">Verif Bayar</button>` : ''}
-              <button onclick="inputResi('${o.orderId}')" class="bg-violet-600 hover:bg-violet-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg">Resi</button>
+            <td class="p-3 space-x-1 flex items-center">
+              <button onclick="showDetail('${o.orderId}')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-bold px-2 py-1 rounded-lg">🔍 Detail</button>
+              ${o.statusBayar !== 'Lunas' ? `<button onclick="updateOrder('${o.orderId}', 'Lunas', null)" class="bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg">Lunas</button>` : ''}
+              <button onclick="inputResi('${o.orderId}')" class="bg-violet-600 hover:bg-violet-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg">Resi</button>
             </td>
           </tr>
         `).join('');
         return true;
       } catch(e) { return false; }
+    }
+
+    // FUNGSI TAMPILKAN MODAL DETAIL
+    function showDetail(orderId) {
+      const order = allOrdersData.find(o => o.orderId === orderId);
+      if(!order) return alert("Data pesanan tidak ditemukan.");
+
+      document.getElementById('modalOrderId').innerText = order.orderId;
+      document.getElementById('modalTanggal').innerText = order.tanggal;
+      document.getElementById('modalNama').innerText = order.nama;
+      document.getElementById('modalWa').innerText = order.wa;
+      document.getElementById('modalEmail').innerText = order.email;
+      document.getElementById('modalCatatan').innerText = order.catatan || "-";
+      document.getElementById('modalProduk').innerText = order.produk;
+      document.getElementById('modalJumlah').innerText = `${order.jumlah} Pcs`;
+      document.getElementById('modalKodeUnik').innerText = `+${order.kodeUnik}`;
+      document.getElementById('modalTotal').innerText = `Rp ${Number(order.totalBayar).toLocaleString('id-ID')}`;
+
+      // Set link WA langsung ke pembeli
+      const cleanWa = order.wa.replace(/^0/, '62').replace(/\D/g, '');
+      const waText = `Halo kak ${order.nama}, mengenai pesanan Open PO dengan ID ${order.orderId}:`;
+      document.getElementById('modalWaBtn').href = `https://wa.me/${cleanWa}?text=${encodeURIComponent(waText)}`;
+
+      document.getElementById('detailModal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeDetail() {
+      document.getElementById('detailModal').classList.add('hidden');
+    }
+
+    function copyAddress() {
+      const catatan = document.getElementById('modalCatatan').innerText;
+      const nama = document.getElementById('modalNama').innerText;
+      const wa = document.getElementById('modalWa').innerText;
+      const textToCopy = `Penerima: ${nama} (${wa})\nAlamat: ${catatan}`;
+      
+      navigator.clipboard.writeText(textToCopy);
+      alert("Alamat & Kontak Penerima Berhasil Disalin!");
     }
 
     async function toggleProductStatus(id, newStatus) {
