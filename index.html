@@ -23,17 +23,23 @@
   <div class="fixed top-0 -left-20 w-96 h-96 bg-violet-600/30 rounded-full blur-[120px] pointer-events-none"></div>
   <div class="fixed bottom-0 -right-20 w-96 h-96 bg-fuchsia-600/20 rounded-full blur-[120px] pointer-events-none"></div>
 
-  <nav class="max-w-3xl mx-auto px-4 pt-6 pb-2 flex justify-between items-center relative z-10">
+  <nav class="max-w-xl mx-auto px-4 pt-6 pb-2 flex justify-between items-center relative z-10">
     <div class="flex items-center gap-2">
       <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
-      <span class="font-extrabold tracking-wider text-xl bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">Toko Zetta.</span>
+      <span class="font-extrabold tracking-wider text-xl bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">DROPSTORE.</span>
     </div>
-    <button onclick="toggleSection('track')" class="flex items-center gap-2 text-xs font-semibold bg-slate-900/80 hover:bg-slate-800 text-slate-300 px-4 py-2 rounded-full border border-slate-800 transition-all duration-200 hover:border-slate-700">
-      <i data-lucide="search" class="w-3.5 h-3.5"></i> Cek Pesanan
-    </button>
+    
+    <div class="flex items-center gap-2">
+      <a href="https://wa.me/6285111335695?text=Halo%20Admin,%20saya%20butuh%20bantuan%20terkait%20pesanan%20PO" target="_blank" class="flex items-center gap-1.5 text-xs font-semibold bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 px-3 py-2 rounded-full border border-emerald-500/20 transition-all duration-200">
+        <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> Bantuan
+      </a>
+      <button onclick="toggleSection('track')" class="flex items-center gap-1.5 text-xs font-semibold bg-slate-900/80 hover:bg-slate-800 text-slate-300 px-3 py-2 rounded-full border border-slate-800 transition-all duration-200 hover:border-slate-700">
+        <i data-lucide="search" class="w-3.5 h-3.5"></i> Cek Pesanan
+      </button>
+    </div>
   </nav>
 
-  <main class="max-w-xl mx-auto px-4 py-8 relative z-10">
+  <main class="max-w-xl mx-auto px-4 py-6 relative z-10">
 
     <div id="section-form" class="glass-card bg-slate-900/80 border border-slate-800/80 p-6 md:p-8 rounded-3xl shadow-2xl">
       <div class="mb-6">
@@ -111,8 +117,8 @@
         <div class="p-4 rounded-2xl border border-slate-800 bg-slate-950/60 flex items-center justify-between">
           <div>
             <p class="text-xs text-slate-400 font-semibold">BANK BCA</p>
-            <p class="font-mono font-bold text-base text-white">455-007-9602</p>
-            <p class="text-[11px] text-slate-500">a.n Garda Purnama Syahda</p>
+            <p class="font-mono font-bold text-base text-white">1234-5678-90</p>
+            <p class="text-[11px] text-slate-500">a.n Store Owner</p>
           </div>
           <button onclick="copyRek()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-2 rounded-xl font-medium transition">Salin</button>
         </div>
@@ -142,6 +148,21 @@
       </button>
     </div>
 
+    <div class="mt-4 glass-card bg-slate-900/60 border border-slate-800/80 p-4 rounded-2xl flex items-center justify-between text-xs">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 flex items-center justify-center shrink-0">
+          <i data-lucide="help-circle" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <p class="font-bold text-white">Ada kendala / salah isi data?</p>
+          <p class="text-slate-400 text-[11px]">Hubungi Admin via WhatsApp untuk koreksi pesanan.</p>
+        </div>
+      </div>
+      <a href="https://wa.me/6285111335695?text=Halo%20Admin,%20saya%20mau%20komplain%20/%20minta%20bantuan%20terkait%20pesanan" target="_blank" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3.5 py-2 rounded-xl flex items-center gap-1 shrink-0 transition">
+        <span>Chat Admin</span>
+      </a>
+    </div>
+
   </main>
 
   <script>
@@ -169,7 +190,7 @@
 
         if (data.products && data.products.length > 0) {
           select.innerHTML = data.products.map(p => 
-            `<option value="${p.nama}" data-harga="${p.harga}">${p.nama} — Rp${p.harga.toLocaleString('id-ID')}</option>`
+            `<option value="${p.nama}" data-harga="${p.harga}">${p.nama} — Rp ${p.harga.toLocaleString('id-ID')}</option>`
           ).join('');
           btn.disabled = false;
         } else {
@@ -211,8 +232,11 @@
         if(data.success) {
           document.getElementById('payOrderId').innerText = data.orderId;
           document.getElementById('payTotal').innerText = `Rp ${data.totalBayar.toLocaleString('id-ID')}`;
-          const waMsg = `Halo Admin, saya sudah buat order PO ${data.orderId} senilai Rp${data.totalBayar.toLocaleString('id-ID')}. Mohon dicek.`;
+          
+          // GANTI 6281234567890 DENGAN NO WA KAMU
+          const waMsg = `Halo Admin, saya sudah buat order PO ${data.orderId} senilai Rp ${data.totalBayar.toLocaleString('id-ID')}. Mohon dicek.`;
           document.getElementById('waConfirmBtn').href = `https://wa.me/6285111335695?text=${encodeURIComponent(waMsg)}`;
+          
           toggleSection('payment');
         }
       } catch(err) {
