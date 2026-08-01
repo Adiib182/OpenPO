@@ -113,14 +113,47 @@
       </div>
 
       <div class="space-y-3 text-left mb-6">
-        <p class="text-xs font-bold text-slate-300 uppercase tracking-wider">Rekening Tujuan:</p>
-        <div class="p-4 rounded-2xl border border-slate-800 bg-slate-950/60 flex items-center justify-between">
+        <p class="text-xs font-bold text-slate-300 uppercase tracking-wider">Pilih Metode Pembayaran:</p>
+        
+        <div class="grid grid-cols-2 gap-2 p-1 bg-slate-950 border border-slate-800 rounded-2xl">
+          <button type="button" id="tabBtnBca" onclick="switchPaymentMethod('bca')" class="py-2 px-3 text-xs font-bold rounded-xl bg-violet-600 text-white shadow transition-all duration-200 flex items-center justify-center gap-1.5">
+            <i data-lucide="credit-card" class="w-3.5 h-3.5"></i> Bank BCA
+          </button>
+          <button type="button" id="tabBtnQris" onclick="switchPaymentMethod('qris')" class="py-2 px-3 text-xs font-bold rounded-xl text-slate-400 hover:text-white transition-all duration-200 flex items-center justify-center gap-1.5">
+            <i data-lucide="qr-code" class="w-3.5 h-3.5"></i> QRIS Store
+          </button>
+        </div>
+
+        <div id="paymentBca" class="p-4 rounded-2xl border border-slate-800 bg-slate-950/60 flex items-center justify-between">
           <div>
-            <p class="text-xs text-slate-400 font-semibold">BANK BCA</p>
-            <p class="font-mono font-bold text-base text-white">1234-5678-90</p>
-            <p class="text-[11px] text-slate-500">a.n Store Owner</p>
+            <p class="text-[10px] font-bold text-violet-400 uppercase tracking-wider">BANK BCA</p>
+            <p class="font-mono font-bold text-base text-white">455-007-9602</p>
+            <p class="text-[11px] text-slate-400">a.n Garda Purnama Syahda</p>
           </div>
-          <button onclick="copyRek()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-2 rounded-xl font-medium transition">Salin</button>
+          <button type="button" onclick="copyRek()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-2 rounded-xl font-medium transition flex items-center gap-1">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i> Salin
+          </button>
+        </div>
+
+        <div id="paymentQris" class="hidden p-5 rounded-2xl border border-slate-800 bg-slate-950/80 text-center space-y-3 relative overflow-hidden">
+          <div class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <span>QRIS ALL PAYMENT</span>
+          </div>
+
+          <div class="relative inline-block p-3 bg-white rounded-2xl shadow-xl shadow-violet-500/10">
+            <img id="qrisImg" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=QRIS_STORE_DEMO" alt="QRIS Toko" class="w-48 h-48 mx-auto rounded-lg object-contain">
+          </div>
+
+          <p class="text-[11px] text-slate-400">Screenshot gambar QRIS di atas untuk di-upload/scan pada m-Banking atau E-Wallet pilihanmu.</p>
+
+          <div class="pt-2 border-t border-slate-800/80 flex flex-wrap justify-center gap-1.5 text-[9px] font-bold text-slate-400">
+            <span class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded-md">BCA</span>
+            <span class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded-md">Mandiri</span>
+            <span class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded-md">GoPay</span>
+            <span class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded-md">OVO</span>
+            <span class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded-md">DANA</span>
+            <span class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded-md">ShopeePay</span>
+          </div>
         </div>
       </div>
 
@@ -180,6 +213,27 @@
       document.getElementById(`section-${sec}`).classList.remove('hidden');
     }
 
+    function switchPaymentMethod(method) {
+      const bcaContent = document.getElementById('paymentBca');
+      const qrisContent = document.getElementById('paymentQris');
+      const bcaBtn = document.getElementById('tabBtnBca');
+      const qrisBtn = document.getElementById('tabBtnQris');
+
+      if (method === 'bca') {
+        bcaContent.classList.remove('hidden');
+        qrisContent.classList.add('hidden');
+        
+        bcaBtn.className = "py-2 px-3 text-xs font-bold rounded-xl bg-violet-600 text-white shadow transition-all duration-200 flex items-center justify-center gap-1.5";
+        qrisBtn.className = "py-2 px-3 text-xs font-bold rounded-xl text-slate-400 hover:text-white transition-all duration-200 flex items-center justify-center gap-1.5";
+      } else {
+        bcaContent.classList.add('hidden');
+        qrisContent.classList.remove('hidden');
+
+        qrisBtn.className = "py-2 px-3 text-xs font-bold rounded-xl bg-violet-600 text-white shadow transition-all duration-200 flex items-center justify-center gap-1.5";
+        bcaBtn.className = "py-2 px-3 text-xs font-bold rounded-xl text-slate-400 hover:text-white transition-all duration-200 flex items-center justify-center gap-1.5";
+      }
+    }
+
     async function loadPublicProducts() {
       const select = document.getElementById('produk');
       const btn = document.getElementById('btnSubmit');
@@ -233,7 +287,7 @@
           document.getElementById('payOrderId').innerText = data.orderId;
           document.getElementById('payTotal').innerText = `Rp ${data.totalBayar.toLocaleString('id-ID')}`;
           
-          // GANTI 6281234567890 DENGAN NO WA KAMU
+          // GANTI 6281234567890 DENGAN NOMOR WA KAMU
           const waMsg = `Halo Admin, saya sudah buat order PO ${data.orderId} senilai Rp ${data.totalBayar.toLocaleString('id-ID')}. Mohon dicek.`;
           document.getElementById('waConfirmBtn').href = `https://wa.me/6285111335695?text=${encodeURIComponent(waMsg)}`;
           
