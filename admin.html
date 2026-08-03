@@ -171,7 +171,7 @@
             <span id="modalTotal" class="font-mono font-extrabold text-emerald-400 text-base">-</span>
           </div>
           <div class="pt-2">
-            <a id="modalLinkBukti" href="#" target="_blank" class="text-violet-400 hover:text-violet-300 underline font-bold">Lihat Bukti Transfer</a>
+            <a id="modalLinkBukti" href="#" target="_blank" class="text-violet-400 hover:text-violet-300 underline font-bold">Lihat Dokumen Bukti Transfer</a>
           </div>
         </div>
       </div>
@@ -210,6 +210,8 @@
       if(ok) {
         document.getElementById('loginBox').classList.add('hidden');
         document.getElementById('adminDash').classList.remove('hidden');
+      } else {
+        alert("PIN Admin Salah atau gagal terhubung ke Server!");
       }
     }
 
@@ -357,7 +359,7 @@
       tbody.innerHTML = paginated.map(o => {
         const safeId = String(o.orderId).replace(/'/g, "\\'");
         const urlBukti = o.buktiTransfer && o.buktiTransfer !== '-' 
-            ? `<a href="${o.buktiTransfer}" target="_blank" class="text-violet-400 hover:underline">Lihat Bukti</a>`
+            ? `<a href="${o.buktiTransfer}" target="_blank" class="text-violet-400 font-bold hover:underline">Lihat Bukti</a>`
             : `<span class="text-slate-600">Belum Ada</span>`;
             
         return `
