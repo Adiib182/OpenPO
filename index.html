@@ -292,12 +292,16 @@
 
         try {
           const res = await fetch(GAS_URL, {
+            redirect: "follow",
             method: 'POST',
+            headers: {
+              "Content-Type": "text/plain;charset=utf-8",
+            },
             body: JSON.stringify({
-              action: 'uploadBukti',
+              action: 'uploadBukti', 
               orderId: orderId,
-              fileName: file.name,
-              mimeType: file.type,
+              fileName: file.name, 
+              mimeType: file.type, 
               fileData: base64Data
             })
           });
@@ -377,10 +381,17 @@
         const base64Data = e.target.result.split(',')[1];
         try {
           const res = await fetch(GAS_URL, {
+            redirect: "follow",
             method: 'POST',
+            headers: {
+              "Content-Type": "text/plain;charset=utf-8",
+            },
             body: JSON.stringify({
-              action: 'uploadBukti', orderId: orderId,
-              fileName: file.name, mimeType: file.type, fileData: base64Data
+              action: 'uploadBukti', 
+              orderId: orderId,
+              fileName: file.name, 
+              mimeType: file.type, 
+              fileData: base64Data
             })
           });
           const data = await res.json();
