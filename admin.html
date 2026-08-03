@@ -107,13 +107,6 @@
         </button>
       </div>
 
-      <div id="buktiContainer" class="pt-2 border-t border-slate-800/80 hidden">
-  <p class="text-slate-400 mb-1">Bukti Transfer Pembeli:</p>
-  <a id="modalBuktiLink" href="#" target="_blank" class="inline-flex items-center gap-1.5 text-violet-400 hover:text-violet-300 font-bold underline text-xs">
-    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Lihat Bukti Transfer (Drive)
-  </a>
-</div>
-      
       <div class="space-y-3 text-xs">
         <div class="bg-slate-950/60 p-4 rounded-2xl border border-slate-800 space-y-2">
           <p class="text-[10px] font-bold text-violet-400 uppercase tracking-wider">Informasi Pembeli</p>
@@ -298,13 +291,7 @@
       // Pastikan pencarian ID menggunakan pembandingan String
       const order = allOrdersData.find(o => String(o.orderId) === String(orderId));
       if(!order) return alert("Data pesanan tidak ditemukan.");
-      if (order.buktiTransfer) {
-  document.getElementById('buktiContainer').classList.remove('hidden');
-  document.getElementById('modalBuktiLink').href = order.buktiTransfer;
-} else {
-  document.getElementById('buktiContainer').classList.add('hidden');
-}
-      
+
       document.getElementById('modalOrderId').innerText = order.orderId || '-';
       document.getElementById('modalTanggal').innerText = order.tanggal || '-';
       document.getElementById('modalNama').innerText = order.nama || '-';
