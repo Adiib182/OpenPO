@@ -313,7 +313,7 @@
             btn.classList.replace('hover:bg-emerald-500', 'cursor-not-allowed');
             lucide.createIcons();
           } else {
-            alert('Gagal: ' + data.message);
+            alert('Gagal: ' + (data.message || data.error));
             btn.innerHTML = `<i data-lucide="upload" class="w-4 h-4"></i> Upload Ulang`;
             btn.disabled = false;
             lucide.createIcons();
@@ -400,7 +400,7 @@
             btn.innerText = 'Berhasil Terkirim';
             btn.classList.replace('bg-violet-600', 'bg-slate-700');
           } else {
-            alert('Gagal: ' + data.message);
+            alert('Gagal: ' + (data.message || data.error));
             btn.innerText = 'Upload Ulang';
             btn.disabled = false;
           }
