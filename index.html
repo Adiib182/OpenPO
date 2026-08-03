@@ -136,42 +136,35 @@
         </div>
 
         <div id="paymentQris" class="hidden flex flex-col items-center justify-center p-6 rounded-2xl border border-slate-800 bg-slate-950/80 text-center space-y-4">
-          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-            <i data-lucide="qr-code" class="w-3 h-3"></i>
-            <span>QRIS ALL PAYMENT</span>
-          </div>
+  
+  <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+    <i data-lucide="qr-code" class="w-3 h-3"></i>
+    <span>QRIS ALL PAYMENT</span>
+  </div>
 
-          <div class="flex items-center justify-center p-3 bg-white rounded-2xl shadow-xl shadow-violet-500/10 border border-slate-200">
-            <img id="qrisImg" src="https://i.ibb.co.com/ccfx2QW9/IMG-20260801-WA0000.jpg" alt="QRIS Toko" class="w-44 h-44 object-contain rounded-lg">
-          </div>
+  <div class="flex items-center justify-center p-3 bg-white rounded-2xl shadow-xl shadow-violet-500/10 border border-slate-200">
+    <img id="qrisImg" src="https://i.ibb.co.com/ccfx2QW9/IMG-20260801-WA0000.jpg" alt="QRIS Toko" class="w-44 h-44 object-contain rounded-lg">
+  </div>
 
-          <p class="text-[11px] text-slate-400 max-w-xs leading-relaxed">
-            Screenshot atau scan gambar QRIS di atas melalui m-Banking atau E-Wallet pilihanmu.
-          </p>
+  <p class="text-[11px] text-slate-400 max-w-xs leading-relaxed">
+    Screenshot atau scan gambar QRIS di atas melalui m-Banking atau E-Wallet pilihanmu.
+  </p>
 
-          <div class="w-full pt-3 border-t border-slate-800/80 flex flex-wrap justify-center items-center gap-1.5 text-[9px] font-bold text-slate-400">
-            <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg">BCA</span>
-            <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg">Mandiri</span>
-            <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg">GoPay</span>
-            <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg">OVO</span>
-            <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg">DANA</span>
-            <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg">ShopeePay</span>
-          </div>
-         </div>
-      </div>
+  <div class="w-full pt-3 border-t border-slate-800/80 flex flex-wrap justify-center items-center gap-1.5 text-[9px] font-bold text-slate-400">
+    <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg">BCA</span>
+    <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg">Mandiri</span>
+    <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg">GoPay</span>
+    <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg">OVO</span>
+    <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg">DANA</span>
+    <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg">ShopeePay</span>
+  </div>
+ </div>
+</div>
 
       <div class="space-y-2">
-        <div class="mt-6 text-left border-t border-slate-800 pt-4">
-          <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-            Upload Bukti Pembayaran
-          </label>
-          <input type="file" id="fileBukti" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-violet-600 file:text-white hover:file:bg-violet-500 cursor-pointer bg-slate-950 p-2 rounded-2xl border border-slate-800">
-          
-          <button type="button" id="btnUploadBukti" onclick="submitBuktiTransfer()" class="w-full mt-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-2xl text-xs transition flex justify-center items-center gap-2">
-            <i data-lucide="upload-cloud" class="w-4 h-4"></i>
-            <span>Kirim Bukti Transfer</span>
-          </button>
-        </div>
+        <a id="waConfirmBtn" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 transition">
+          <i data-lucide="message-square" class="w-4 h-4"></i> Konfirmasi via WhatsApp
+        </a>
         <button onclick="location.reload()" class="w-full text-xs text-slate-500 hover:text-slate-300 py-2 transition">Kembali ke Halaman Utama</button>
       </div>
     </div>
@@ -239,7 +232,7 @@
       } else {
         bcaContent.classList.add('hidden');
         qrisContent.classList.remove('hidden');
-        
+
         qrisBtn.className = "py-2 px-3 text-xs font-bold rounded-xl bg-violet-600 text-white shadow transition-all duration-200 flex items-center justify-center gap-1.5";
         bcaBtn.className = "py-2 px-3 text-xs font-bold rounded-xl text-slate-400 hover:text-white transition-all duration-200 flex items-center justify-center gap-1.5";
       }
@@ -260,7 +253,7 @@
               ${p.nama} — Rp ${p.harga.toLocaleString('id-ID')} ${isFull ? ' (KUOTA HABIS 🚫)' : ` (Sisa ${p.sisa} Slot 🔥)`}
             </option>`;
           }).join('');
-          
+
           // Cek jika produk pertama habis
           const firstOption = select.options[0];
           if (firstOption && firstOption.disabled) {
@@ -307,7 +300,11 @@
         if(data.success) {
           document.getElementById('payOrderId').innerText = data.orderId;
           document.getElementById('payTotal').innerText = `Rp ${data.totalBayar.toLocaleString('id-ID')}`;
-                            
+          
+          // GANTI 6281234567890 DENGAN NOMOR WA KAMU
+          const waMsg = `Halo Admin, saya sudah buat order PO ${data.orderId} senilai Rp ${data.totalBayar.toLocaleString('id-ID')}. Mohon dicek.`;
+          document.getElementById('waConfirmBtn').href = `https://wa.me/6285111335695?text=${encodeURIComponent(waMsg)}`;
+          
           toggleSection('payment');
         }
       } catch(err) {
@@ -319,67 +316,16 @@
       }
     }
 
-    async function submitBuktiTransfer() {
-      const fileInput = document.getElementById('fileBukti');
-      const btn = document.getElementById('btnUploadBukti');
-      const orderId = document.getElementById('payOrderId').innerText;
-
-      if (!fileInput.files || fileInput.files.length === 0) {
-        alert("Silakan pilih foto bukti transfer terlebih dahulu!");
-        return;
-      }
-
-      const file = fileInput.files[0];
-      btn.disabled = true;
-      btn.innerHTML = `<span>Proses Mengunggah...</span>`;
-
-      const reader = new FileReader();
-      reader.onload = async function(e) {
-        const base64Data = e.target.result;
-        try {
-          const res = await fetch(GAS_URL, {
-            method: 'POST',
-            // HEADER TAMBAHAN SUPAYA TIDAK DIBLOKIR SAAT UPLOAD FILE BESAR
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({
-              action: 'uploadProof',
-              orderId: orderId,
-              fileName: file.name,
-              fileBase64: base64Data
-            })
-          });
-          const data = await res.json();
-
-          if (data.success) {
-            alert("Bukti transfer berhasil terkirim! Admin akan segera memverifikasi.");
-            location.reload();
-          } else {
-            // PENANGKAP ERROR SUDAH DIPERBAIKI
-            alert("Gagal mengunggah: " + (data.message || data.error || "Kesalahan tidak diketahui."));
-          }
-        } catch (err) {
-          alert("Terjadi kesalahan koneksi. Silakan coba lagi.");
-        } finally {
-          btn.disabled = false;
-          btn.innerHTML = `<i data-lucide="upload-cloud" class="w-4 h-4"></i><span>Kirim Bukti Transfer</span>`;
-          lucide.createIcons();
-        }
-      };
-
-      reader.readAsDataURL(file);
-    }
-    
     async function trackOrder() {
       const q = document.getElementById('trackQuery').value;
       if(!q) return alert("Masukkan ID Pesanan atau WhatsApp!");
-      
       const resDiv = document.getElementById('trackResult');
       resDiv.innerHTML = "<p class='text-xs text-slate-500'>Mencari data pesanan...</p>";
-      
+
       try {
         const res = await fetch(`${GAS_URL}?action=trackOrder&query=${q}`);
         const data = await res.json();
-        
+
         if(data.orders && data.orders.length > 0) {
           resDiv.innerHTML = data.orders.map(o => `
             <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl mb-3 text-xs space-y-2">
