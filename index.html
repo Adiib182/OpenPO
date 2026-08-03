@@ -319,7 +319,7 @@
             lucide.createIcons();
           }
         } catch (err) {
-          alert('Error saat mengupload. Coba lagi.');
+          alert('System Error 1: ' + err.message);
           btn.innerHTML = `<i data-lucide="upload" class="w-4 h-4"></i> Upload Ulang`;
           btn.disabled = false;
           lucide.createIcons();
@@ -405,7 +405,7 @@
             btn.disabled = false;
           }
         } catch (err) {
-          alert('Error upload');
+          alert('System Error 2: ' + err.message);
           btn.innerText = 'Upload Ulang';
           btn.disabled = false;
         }
