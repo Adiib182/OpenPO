@@ -137,13 +137,17 @@
           </button>
         </div>
 
-        <div id="paymentQris" class="hidden flex flex-col items-center justify-center p-6 rounded-2xl border border-slate-800 bg-slate-950/80 text-center space-y-4">
+        <div id="paymentQris" class="hidden flex flex-col items-center justify-center p-6 rounded-2xl border border-slate-800 bg-slate-950/80 text-center space-y-3">
           <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
             <i data-lucide="qr-code" class="w-3 h-3"></i>
             <span>QRIS ALL PAYMENT</span>
           </div>
-          <div class="flex items-center justify-center p-3 bg-white rounded-2xl shadow-xl shadow-violet-500/10 border border-slate-200">
-            <img id="qrisImg" src="https://i.ibb.co.com/ccfx2QW9/IMG-20260801-WA0000.jpg" alt="QRIS Toko" class="w-44 h-44 object-contain rounded-lg">
+          <!-- GAMBAR QRIS DITAMBAHKAN ONCLICK MEMBESAR -->
+          <div class="flex flex-col items-center p-3 bg-white rounded-2xl shadow-xl border border-slate-200 cursor-pointer group" onclick="openQrisModal()">
+            <img id="qrisImg" src="https://i.ibb.co.com/ccfx2QW9/IMG-20260801-WA0000.jpg" alt="QRIS Toko" class="w-44 h-44 object-contain rounded-lg transition-transform duration-200 group-hover:scale-105">
+            <span class="text-[10px] text-slate-500 font-semibold mt-1 flex items-center gap-1">
+              <i data-lucide="zoom-in" class="w-3 h-3"></i> Klik untuk memperbesar
+            </span>
           </div>
           <p class="text-[11px] text-slate-400 max-w-xs leading-relaxed">
             Screenshot atau scan gambar QRIS di atas melalui m-Banking atau E-Wallet pilihanmu.
@@ -183,6 +187,22 @@
 
   </main>
 
+  <!-- MODAL ZOOM QRIS -->
+  <div id="qrisModal" class="hidden fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 transition-all" onclick="closeQrisModal()">
+    <div class="relative max-w-sm w-full bg-slate-900 border border-slate-800 p-5 rounded-3xl shadow-2xl text-center space-y-3" onclick="event.stopPropagation()">
+      <button onclick="closeQrisModal()" class="absolute top-3 right-3 text-slate-400 hover:text-white p-2 rounded-full bg-slate-800/80 transition">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <p class="text-xs font-bold text-violet-400 uppercase tracking-wider">Scan Kode QRIS</p>
+      <div class="p-2 bg-white rounded-2xl inline-block shadow-inner">
+        <img id="qrisModalImg" src="https://i.ibb.co.com/ccfx2QW9/IMG-20260801-WA0000.jpg" alt="QRIS Besar" class="w-full max-w-[280px] h-auto rounded-lg">
+      </div>
+      <p class="text-[11px] text-slate-400 leading-snug">
+        Gunakan aplikasi m-Banking atau E-Wallet untuk melakukan pemindaian.
+      </p>
+    </div>
+  </div>
+
   <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbze1RTE1AZAMP_BpgB41hkHYOy6kpCwFUZv_AItCL7CXkzL-eG9K4uLzL-WUJKl31iF/exec";
     let currentOrderId = "";
@@ -216,6 +236,16 @@
         qrisBtn.className = "py-2 px-3 text-xs font-bold rounded-xl bg-violet-600 text-white shadow transition flex items-center justify-center gap-1.5";
         bcaBtn.className = "py-2 px-3 text-xs font-bold rounded-xl text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5";
       }
+    }
+
+    /* LOGIKA POPUP ZOOM QRIS */
+    function openQrisModal() {
+      document.getElementById('qrisModal').classList.remove('hidden');
+      if(window.lucide) lucide.createIcons();
+    }
+
+    function closeQrisModal() {
+      document.getElementById('qrisModal').classList.add('hidden');
     }
 
     async function loadPublicProducts() {
@@ -291,12 +321,40 @@
       }
     }
 
-    function getBase64(file) {
+    /* KOMPRESI GAMBAR OTOMATIS SEBELUM DI-UPLOAD (MENCEGAH GAGAL UPLOAD BUKTI) */
+    function getCompressedBase64(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
+        reader.onload = (e) => {
+          const img = new Image();
+          img.src = e.target.result;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+            const maxDimension = 1200; // Ukuran resolusi maksimal
+
+            if (width > height && width > maxDimension) {
+              height = Math.round((height * maxDimension) / width);
+              width = maxDimension;
+            } else if (height > maxDimension) {
+              width = Math.round((width * maxDimension) / height);
+              height = maxDimension;
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            // Kompresi kualitas JPEG ke 75%
+            const compressedBase64 = canvas.toDataURL('image/jpeg', 0.75);
+            resolve(compressedBase64);
+          };
+          img.onerror = (err) => reject(err);
+        };
+        reader.onerror = (err) => reject(err);
       });
     }
 
@@ -305,12 +363,13 @@
       if (!fileInput.files.length) return alert("Silakan pilih gambar bukti transfer terlebih dahulu.");
       
       const btn = document.getElementById('btnUploadBukti');
-      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Sedang Mengupload...`;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Memproses & Upload...`;
       btn.disabled = true;
 
       try {
         const file = fileInput.files[0];
-        const base64Data = await getBase64(file);
+        // Kompresi gambar terlebih dahulu sebelum dikirim
+        const base64Data = await getCompressedBase64(file);
 
         const payload = {
           action: 'uploadPayment',
@@ -330,7 +389,7 @@
           alert(data.message || "Gagal mengupload bukti pembayaran.");
         }
       } catch (error) {
-        alert("Gagal mengupload gambar karena ukuran terlalu besar atau jaringan tidak stabil.");
+        alert("Gagal mengupload bukti transfer. Pastikan koneksi internet stabil dan coba kembali.");
       } finally {
         btn.innerHTML = `<i data-lucide="upload-cloud" class="w-4 h-4"></i> Konfirmasi Pembayaran`;
         btn.disabled = false;
