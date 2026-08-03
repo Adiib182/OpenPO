@@ -40,58 +40,80 @@
       </div>
 
       <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl">
-        <div class="flex items-center justify-between mb-4">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 gap-4">
           <div>
             <h2 class="text-lg font-bold text-white">Katalog & Status PO</h2>
-            <p class="text-xs text-slate-400">Atur harga & saklar Buka/Tutup Pre-Order</p>
+            <p class="text-xs text-slate-400">Atur harga & stok barang</p>
           </div>
-          <button onclick="addNewProductPrompt()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3.5 py-2.5 rounded-xl flex items-center gap-1.5 transition">
-            <i data-lucide="plus" class="w-4 h-4"></i> Tambah Item
-          </button>
+          <div class="flex flex-col md:flex-row items-center gap-2 w-full md:w-auto">
+            <input type="text" id="searchProduct" oninput="searchProd = this.value; prodPage = 1; renderProducts();" placeholder="Cari ID/Nama Item..." class="w-full md:w-48 bg-slate-950 border border-slate-800 p-2 rounded-xl text-xs text-white outline-none focus:border-violet-500">
+            <button onclick="addNewProductPrompt()" class="w-full md:w-auto bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="plus" class="w-4 h-4"></i> Tambah Item
+            </button>
+          </div>
         </div>
 
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto rounded-xl border border-slate-800 mb-2">
           <table class="w-full text-left text-xs text-slate-300">
             <thead class="bg-slate-950 text-slate-400 uppercase tracking-wider text-[10px]">
               <tr>
-                <th class="p-3 rounded-l-xl">ID</th>
+                <th class="p-3">ID</th>
                 <th class="p-3">Nama Item</th>
                 <th class="p-3">Harga</th>
-                <th class="p-3">Status</th>
-                <th class="p-3 rounded-r-xl">Kontrol PO</th>
+                <th class="p-3">Status Jual</th>
+                <th class="p-3">Buka/Tutup</th>
+                <th class="p-3">Aksi</th>
               </tr>
             </thead>
             <tbody id="productTableBody" class="divide-y divide-slate-800/50"></tbody>
           </table>
         </div>
+        <div class="flex justify-between items-center mt-3 text-xs text-slate-400">
+          <span id="prodPageInfo">Halaman 1 / 1</span>
+          <div class="flex gap-1">
+             <button onclick="prodPage--; renderProducts();" class="p-1.5 bg-slate-800 rounded-lg hover:text-white transition"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+             <button onclick="prodPage++; renderProducts();" class="p-1.5 bg-slate-800 rounded-lg hover:text-white transition"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+          </div>
+        </div>
       </div>
 
       <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl">
-        <div class="mb-4">
-          <h2 class="text-lg font-bold text-white">Pesanan Masuk</h2>
-          <p class="text-xs text-slate-400">Klik Order ID / tombol Detail untuk melihat data lengkap & alamat pembeli</p>
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 gap-4">
+          <div>
+            <h2 class="text-lg font-bold text-white">Pesanan Masuk</h2>
+            <p class="text-xs text-slate-400">Daftar order pembeli (max 20 per halaman)</p>
+          </div>
+          <div class="flex w-full md:w-auto">
+            <input type="text" id="searchOrder" oninput="searchOrd = this.value; ordPage = 1; renderOrders();" placeholder="Cari Order ID/Nama..." class="w-full md:w-64 bg-slate-950 border border-slate-800 p-2 rounded-xl text-xs text-white outline-none focus:border-violet-500">
+          </div>
         </div>
 
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto rounded-xl border border-slate-800 mb-2">
           <table class="w-full text-left text-xs text-slate-300">
             <thead class="bg-slate-950 text-slate-400 uppercase tracking-wider text-[10px]">
               <tr>
-                <th class="p-3 rounded-l-xl">ID / Tgl</th>
+                <th class="p-3">ID / Tgl</th>
                 <th class="p-3">Pembeli</th>
                 <th class="p-3">Item Order</th>
                 <th class="p-3">Total Transfer</th>
-                <th class="p-3">Status Bayar</th>
-                <th class="p-3">Status Kirim</th>
-                <th class="p-3 rounded-r-xl">Aksi</th>
+                <th class="p-3">Pembayaran</th>
+                <th class="p-3">Pengiriman</th>
+                <th class="p-3">Aksi</th>
               </tr>
             </thead>
             <tbody id="orderTableBody" class="divide-y divide-slate-800/50"></tbody>
           </table>
         </div>
+        <div class="flex justify-between items-center mt-3 text-xs text-slate-400">
+          <span id="ordPageInfo">Halaman 1 / 1</span>
+          <div class="flex gap-1">
+             <button onclick="ordPage--; renderOrders();" class="p-1.5 bg-slate-800 rounded-lg hover:text-white transition"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+             <button onclick="ordPage++; renderOrders();" class="p-1.5 bg-slate-800 rounded-lg hover:text-white transition"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+          </div>
+        </div>
       </div>
 
     </div>
-
   </div>
 
   <div id="detailModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
@@ -102,7 +124,7 @@
           <span id="modalOrderId" class="font-mono font-bold text-violet-400 text-lg">PO-000000</span>
           <p id="modalTanggal" class="text-xs text-slate-500">Tanggal Order</p>
         </div>
-        <button onclick="closeDetail()" class="text-slate-400 hover:text-white p-1 rounded-xl bg-slate-800/50">
+        <button onclick="closeDetail()" class="text-slate-400 hover:text-white p-1 rounded-xl bg-slate-800/50 transition">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
@@ -111,26 +133,17 @@
         <div class="bg-slate-950/60 p-4 rounded-2xl border border-slate-800 space-y-2">
           <p class="text-[10px] font-bold text-violet-400 uppercase tracking-wider">Informasi Pembeli</p>
           <div class="grid grid-cols-2 gap-2 text-slate-300">
-            <div>
-              <p class="text-slate-500">Nama Lengkap:</p>
-              <p id="modalNama" class="font-bold text-white text-sm">-</p>
-            </div>
-            <div>
-              <p class="text-slate-500">WhatsApp:</p>
-              <p id="modalWa" class="font-mono text-white">-</p>
-            </div>
-            <div class="col-span-2">
-              <p class="text-slate-500">Email:</p>
-              <p id="modalEmail" class="text-white font-mono">-</p>
-            </div>
+            <div><p class="text-slate-500">Nama:</p><p id="modalNama" class="font-bold text-white text-sm">-</p></div>
+            <div><p class="text-slate-500">WhatsApp:</p><p id="modalWa" class="font-mono text-white">-</p></div>
+            <div class="col-span-2"><p class="text-slate-500">Email:</p><p id="modalEmail" class="text-white font-mono">-</p></div>
           </div>
         </div>
 
         <div class="bg-slate-950/60 p-4 rounded-2xl border border-slate-800 space-y-2 relative">
           <div class="flex justify-between items-center">
-            <p class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Alamat & Catatan Pengiriman</p>
+            <p class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Alamat & Catatan</p>
             <button onclick="copyAddress()" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-lg flex items-center gap-1 transition">
-              <i data-lucide="copy" class="w-3 h-3"></i> Salin Alamat
+              <i data-lucide="copy" class="w-3 h-3"></i> Salin
             </button>
           </div>
           <p id="modalCatatan" class="text-white whitespace-pre-line text-xs bg-slate-900 p-3 rounded-xl border border-slate-800/80 font-sans leading-relaxed">-</p>
@@ -143,182 +156,199 @@
             <span id="modalJumlah" class="bg-slate-800 px-2 py-0.5 rounded text-[11px] font-mono">-</span>
           </div>
           <div class="flex justify-between items-center text-slate-400 pt-2 border-t border-slate-800/80">
-            <span>Kode Unik:</span>
-            <span id="modalKodeUnik" class="font-mono font-bold text-amber-400">-</span>
+            <span>Kode Unik:</span><span id="modalKodeUnik" class="font-mono font-bold text-amber-400">-</span>
           </div>
-          <div class="flex justify-between items-center text-slate-200 text-sm pt-1">
-            <span class="font-bold">Total Pembayaran:</span>
-            <span id="modalTotal" class="font-mono font-extrabold text-emerald-400 text-base">-</span>
+          <div class="flex justify-between items-center text-white text-sm font-black pt-1">
+            <span>Total Transfer:</span><span id="modalTotal" class="text-emerald-400">-</span>
           </div>
         </div>
-      </div>
+        
+        <div class="bg-slate-950/60 p-4 rounded-2xl border border-slate-800 space-y-2">
+          <p class="text-[10px] font-bold text-violet-400 uppercase tracking-wider">Bukti Transfer Pembeli</p>
+          <div id="modalBuktiContainer" class="text-xs text-slate-300 bg-slate-900 p-3 rounded-xl border border-slate-800/80">
+            </div>
+        </div>
 
-      <div class="pt-2 flex gap-2">
-        <a id="modalWaBtn" target="_blank" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-3 rounded-2xl flex items-center justify-center gap-2 transition">
-          <i data-lucide="message-square" class="w-4 h-4"></i> Chat WA Pembeli
-        </a>
-        <button onclick="closeDetail()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold px-5 py-3 rounded-2xl transition">
-          Tutup
-        </button>
       </div>
-
     </div>
   </div>
 
   <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbzn5B5-4fIvMo5D6pAHuJgpx3mJIXw9apHOFiCU-RfiJotVg8-nou3rPyBFOrPEobU1/exec";
+    const GAS_URL = "ISI_URL_WEBB_APP_GAS_KAMU_DISINI";
     let currentPin = "";
-    let allOrdersData = []; // Menyimpan semua data pesanan secara global
+    
+    // Data & Pagination States
+    let allOrdersData = [];
+    let allProductsData = [];
+    const perPage = 20;
+    
+    let prodPage = 1;
+    let ordPage = 1;
+    let searchProd = "";
+    let searchOrd = "";
 
-    window.addEventListener('DOMContentLoaded', () => lucide.createIcons());
+    lucide.createIcons();
 
     async function loginAdmin() {
       currentPin = document.getElementById('pinInput').value;
-      const ok = await refreshAll();
-      if(ok) {
+      const btn = document.querySelector('button[onclick="loginAdmin()"]');
+      btn.innerText = "Mengecek...";
+      btn.disabled = true;
+
+      const isValid = await refreshAll();
+      if (isValid) {
         document.getElementById('loginBox').classList.add('hidden');
         document.getElementById('adminDash').classList.remove('hidden');
+      } else {
+        alert("Gagal masuk. Cek koneksi atau PIN.");
       }
+      btn.innerText = "Masuk Dashboard";
+      btn.disabled = false;
     }
 
     async function refreshAll() {
-      const pOk = await loadProducts();
-      const oOk = await loadOrders();
+      try {
+        const [ordersRaw, prodsRaw] = await Promise.all([
+          fetch(GAS_URL + "?action=getAdminData&pin=" + currentPin),
+          fetch(GAS_URL + "?action=getAllProducts&pin=" + currentPin)
+        ]);
+        const ordersRes = await ordersRaw.json();
+        const prodsRes = await prodsRaw.json();
+
+        if (!ordersRes.success || !prodsRes.success) {
+           if(ordersRes.message === "PIN Salah!") alert("PIN Salah!");
+           return false;
+        }
+
+        allOrdersData = ordersRes.orders || [];
+        allProductsData = prodsRes.products || [];
+        
+        renderProducts();
+        renderOrders();
+        return true;
+      } catch(e) {
+        return false;
+      }
+    }
+
+    // Render Produk dengan Search & Paginate (Terbaru -> Lama)
+    function renderProducts() {
+      const tbody = document.getElementById('productTableBody');
+      if(!allProductsData || allProductsData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-500">Belum ada data produk</td></tr>';
+        document.getElementById('prodPageInfo').innerText = 'Halaman 0 / 0';
+        return;
+      }
+
+      let filtered = allProductsData.filter(p => p.nama.toLowerCase().includes(searchProd.toLowerCase()) || p.id.toLowerCase().includes(searchProd.toLowerCase()));
+      filtered.reverse(); // Baru ke lama (di Spreadhseet biasanya bertambah ke bawah)
+
+      const totalPages = Math.ceil(filtered.length / perPage) || 1;
+      if (prodPage > totalPages) prodPage = totalPages;
+      if (prodPage < 1) prodPage = 1;
+
+      const start = (prodPage - 1) * perPage;
+      const paginated = filtered.slice(start, start + perPage);
+
+      tbody.innerHTML = paginated.map(p => `
+        <tr class="hover:bg-slate-800/20 transition-colors border-b border-slate-800/50 last:border-0">
+          <td class="p-3 font-mono text-slate-500">${p.id}</td>
+          <td class="p-3 font-bold text-white">${p.nama}</td>
+          <td class="p-3">Rp ${p.harga.toLocaleString('id-ID')}</td>
+          <td class="p-3">
+             <span class="font-mono font-bold ${p.terjual >= p.kuota ? 'text-amber-400' : 'text-emerald-400'}">${p.terjual} / ${p.kuota}</span>
+             <span class="text-[10px] text-slate-500 block">Terjual</span>
+          </td>
+          <td class="p-3">
+            <span class="px-2.5 py-1 text-[10px] font-bold rounded-full ${p.status === 'OPEN' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}">${p.status}</span>
+          </td>
+          <td class="p-3">
+            <div class="flex items-center gap-1.5">
+              <button onclick="toggleProductStatus('${p.id}', '${p.status === 'OPEN' ? 'CLOSED' : 'OPEN'}')" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white transition" title="Buka/Tutup"><i data-lucide="power" class="w-4 h-4"></i></button>
+              <button onclick="editProductPrompt('${p.id}', '${p.nama}', ${p.harga}, ${p.kuota})" class="p-1.5 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 transition" title="Edit"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+              <button onclick="deleteProductPrompt('${p.id}')" class="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition" title="Hapus"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+      
+      document.getElementById('prodPageInfo').innerText = `Halaman ${prodPage} dari ${totalPages}`;
       lucide.createIcons();
-      return pOk && oOk;
     }
 
-    async function loadProducts() {
-      try {
-        const res = await fetch(`${GAS_URL}?action=getAllProducts&pin=${currentPin}`);
-        const data = await res.json();
-        if(!data.success) return false;
+    // Render Order dengan Search & Paginate (Terbaru -> Lama)
+    function renderOrders() {
+      const tbody = document.getElementById('orderTableBody');
+      if(!allOrdersData || allOrdersData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-slate-500">Belum ada pesanan</td></tr>';
+        document.getElementById('ordPageInfo').innerText = 'Halaman 0 / 0';
+        return;
+      }
+      
+      let filtered = allOrdersData.filter(o => o.orderId.toLowerCase().includes(searchOrd.toLowerCase()) || o.nama.toLowerCase().includes(searchOrd.toLowerCase()));
+      filtered.reverse(); // Baru ke lama
 
-        document.getElementById('productTableBody').innerHTML = data.products.map(p => `
-          <tr class="hover:bg-slate-800/30 transition">
-            <td class="p-3 font-mono text-slate-500">${p.id}</td>
-            <td class="p-3 font-bold text-white">${p.nama}</td>
-            <td class="p-3">Rp ${p.harga.toLocaleString('id-ID')}</td>
-            <td class="p-3">
-              <span class="font-mono font-bold ${p.terjual >= p.kuota ? 'text-amber-400' : 'text-emerald-400'}">
-                ${p.terjual} / ${p.kuota}
-              </span>
-              <span class="text-[10px] text-slate-500 block">Terjual</span>
-            </td>
-            <td class="p-3">
-              <span class="px-2.5 py-1 text-[10px] font-bold rounded-full ${p.status === 'OPEN' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'}">
-                ${p.status}
-              </span>
-            </td>
-            <td class="p-3 space-x-1">
-              <button onclick="toggleProductStatus('${p.id}', '${p.status === 'OPEN' ? 'CLOSED' : 'OPEN'}')" class="text-[11px] px-3 py-1 rounded-xl font-semibold border ${p.status === 'OPEN' ? 'border-rose-500/30 text-rose-400 hover:bg-rose-500/10' : 'border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10'} transition">
-                Set ${p.status === 'OPEN' ? 'CLOSED 🚫' : 'OPEN ✅'}
-              </button>
-              <button onclick="editKuotaPrompt('${p.id}', ${p.kuota})" class="text-[11px] px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl transition">
-                Set Kuota
-              </button>
-            </td>
-          </tr>
-        `).join('');
-        return true;
-      } catch(e) { return false; }
+      const totalPages = Math.ceil(filtered.length / perPage) || 1;
+      if (ordPage > totalPages) ordPage = totalPages;
+      if (ordPage < 1) ordPage = 1;
+      
+      const start = (ordPage - 1) * perPage;
+      const paginated = filtered.slice(start, start + perPage);
+
+      tbody.innerHTML = paginated.map(o => `
+        <tr class="hover:bg-slate-800/20 transition-colors border-b border-slate-800/50 last:border-0">
+          <td class="p-3">
+            <span class="font-mono font-bold text-violet-400 block cursor-pointer hover:underline" onclick="showDetail('${o.orderId}')">${o.orderId}</span>
+            <span class="text-[10px] text-slate-500">${o.tanggal}</span>
+          </td>
+          <td class="p-3">
+            <span class="font-bold text-white block">${o.nama}</span>
+            <span class="text-[10px] text-slate-400 font-mono">${o.wa}</span>
+          </td>
+          <td class="p-3 text-white font-semibold">${o.produk} <span class="text-slate-500 font-normal">x${o.jumlah}</span></td>
+          <td class="p-3 font-mono font-bold text-emerald-400">Rp ${o.totalBayar.toLocaleString('id-ID')}</td>
+          <td class="p-3">
+             <span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${o.statusBayar === 'Lunas' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}">${o.statusBayar}</span>
+          </td>
+          <td class="p-3 text-slate-300 text-xs">${o.statusPengiriman}</td>
+          <td class="p-3">
+            <div class="flex items-center gap-1.5">
+              <button onclick="showDetail('${o.orderId}')" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition" title="Lihat Detail"><i data-lucide="eye" class="w-4 h-4"></i></button>
+              <button onclick="editOrderPrompt('${o.orderId}')" class="p-1.5 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 transition" title="Edit Status/Resi"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+              <button onclick="deleteOrderPrompt('${o.orderId}')" class="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition" title="Hapus"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+
+      document.getElementById('ordPageInfo').innerText = `Halaman ${ordPage} dari ${totalPages}`;
+      lucide.createIcons();
     }
 
-    async function addNewProductPrompt() {
-      const nama = prompt("Nama Item/Produk Baru:");
-      if(!nama) return;
-      const harga = prompt("Harga (Angka saja, misal 250000):");
-      if(!harga) return;
-      const kuota = prompt("Batas Kuota PO (misal 20):", "20");
-      if(!kuota) return;
-
-      await fetch(GAS_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'saveProduct', pin: currentPin, nama: nama, harga: harga, kuota: kuota, status: 'OPEN' })
-      });
-      refreshAll();
-    }
-
-    async function editKuotaPrompt(id, currentKuota) {
-      const newKuota = prompt("Masukkan Batas Kuota Baru:", currentKuota);
-      if(!newKuota) return;
-
-      await fetch(GAS_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'saveProduct', pin: currentPin, id: id, kuota: newKuota })
-      });
-      refreshAll();
-    }
-
-    async function loadOrders() {
-      try {
-        const res = await fetch(`${GAS_URL}?action=getAdminData&pin=${currentPin}`);
-        const data = await res.json();
-        if(!data.success) return false;
-
-        allOrdersData = data.orders; // Simpan data ke variabel global
-
-        document.getElementById('orderTableBody').innerHTML = data.orders.map(o => {
-          const safeId = String(o.orderId).replace(/'/g, "\\'");
-          return `
-          <tr class="hover:bg-slate-800/30 transition">
-            <td class="p-3">
-              <button onclick="showDetail('${safeId}')" class="font-mono font-bold text-violet-400 hover:underline text-left block">
-                ${o.orderId}
-              </button>
-              <span class="text-[10px] text-slate-500">${o.tanggal}</span>
-            </td>
-            <td class="p-3"><b class="text-white">${o.nama}</b><br><span class="text-[10px] text-slate-500">${o.wa}</span></td>
-            <td class="p-3">${o.produk} (${o.jumlah}x)</td>
-            <td class="p-3 font-bold text-emerald-400 font-mono">Rp ${Number(o.totalBayar).toLocaleString('id-ID')}</td>
-            <td class="p-3">
-              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${o.statusBayar === 'Lunas' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}">${o.statusBayar}</span>
-            </td>
-            <td class="p-3"><span class="bg-slate-800 px-2.5 py-1 rounded-lg text-[10px] text-slate-300 font-mono">${o.statusPengiriman}</span></td>
-            <td class="p-3 space-x-1 flex items-center">
-              <button onclick="showDetail('${safeId}')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-bold px-2 py-1 rounded-lg">🔍 Detail</button>
-              ${o.statusBayar !== 'Lunas' ? `<button onclick="updateOrder('${safeId}', 'Lunas', null)" class="bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg">Lunas</button>` : ''}
-              <button onclick="inputResi('${safeId}')" class="bg-violet-600 hover:bg-violet-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg">Resi</button>
-            </td>
-          </tr>
-        `}).join('');
-        return true;
-      } catch(e) { return false; }
-    }
-
-    // FUNGSI TAMPILKAN MODAL DETAIL (DIPERBAIKI)
     function showDetail(orderId) {
-      // Pastikan pencarian ID menggunakan pembandingan String
       const order = allOrdersData.find(o => String(o.orderId) === String(orderId));
       if(!order) return alert("Data pesanan tidak ditemukan.");
-
+      
       document.getElementById('modalOrderId').innerText = order.orderId || '-';
       document.getElementById('modalTanggal').innerText = order.tanggal || '-';
       document.getElementById('modalNama').innerText = order.nama || '-';
-      
-      // Konversi wa ke String agar aman
-      const waString = String(order.wa || '');
-      document.getElementById('modalWa').innerText = waString || '-';
+      document.getElementById('modalWa').innerText = order.wa || '-';
       document.getElementById('modalEmail').innerText = order.email || '-';
-      document.getElementById('modalCatatan').innerText = order.catatan || "-";
+      document.getElementById('modalCatatan').innerText = order.catatan || '-';
       document.getElementById('modalProduk').innerText = order.produk || '-';
-      document.getElementById('modalJumlah').innerText = `${order.jumlah || 1} Pcs`;
-      document.getElementById('modalKodeUnik').innerText = `+${order.kodeUnik || 0}`;
+      document.getElementById('modalJumlah').innerText = order.jumlah ? order.jumlah + " pcs" : '-';
+      document.getElementById('modalKodeUnik').innerText = order.kodeUnik || '-';
+      document.getElementById('modalTotal').innerText = order.totalBayar ? 'Rp ' + order.totalBayar.toLocaleString('id-ID') : '-';
       
-      const total = Number(order.totalBayar || 0);
-      document.getElementById('modalTotal').innerText = `Rp ${isNaN(total) ? '0' : total.toLocaleString('id-ID')}`;
-
-      // Buat format nomor WA internasional yang aman
-      let cleanWa = waString.replace(/\D/g, '');
-      if (cleanWa.startsWith('0')) {
-        cleanWa = '62' + cleanWa.slice(1);
+      const buktiContainer = document.getElementById('modalBuktiContainer');
+      if (order.buktiTransfer && order.buktiTransfer !== "-" && order.buktiTransfer !== "") {
+        buktiContainer.innerHTML = `<a href="${order.buktiTransfer}" target="_blank" class="text-blue-400 hover:text-blue-300 underline flex items-center gap-2"><i data-lucide="external-link" class="w-4 h-4"></i> Lihat Bukti Transfer</a>`;
+      } else {
+        buktiContainer.innerHTML = `<p class="text-slate-500 italic">Pembeli belum mengupload bukti transfer.</p>`;
       }
-      const waText = `Halo kak ${order.nama}, mengenai pesanan Open PO dengan ID ${order.orderId}:`;
-      document.getElementById('modalWaBtn').href = `https://wa.me/${cleanWa}?text=${encodeURIComponent(waText)}`;
 
-      // Buka Modal Popup
       document.getElementById('detailModal').classList.remove('hidden');
-      if (window.lucide) lucide.createIcons();
+      lucide.createIcons();
     }
 
     function closeDetail() {
@@ -326,9 +356,9 @@
     }
 
     function copyAddress() {
-      const catatan = document.getElementById('modalCatatan').innerText;
       const nama = document.getElementById('modalNama').innerText;
       const wa = document.getElementById('modalWa').innerText;
+      const catatan = document.getElementById('modalCatatan').innerText;
       const textToCopy = `Penerima: ${nama} (${wa})\nAlamat: ${catatan}`;
       
       navigator.clipboard.writeText(textToCopy);
@@ -348,25 +378,64 @@
       if(!nama) return;
       const harga = prompt("Harga (Angka saja, misal 250000):");
       if(!harga) return;
+      const kuota = prompt("Jumlah Stok/Kuota (Angka saja, misal 20):", "20");
+      if(!kuota) return;
 
       await fetch(GAS_URL, {
         method: 'POST',
-        body: JSON.stringify({ action: 'saveProduct', pin: currentPin, nama: nama, harga: harga, status: 'OPEN' })
+        body: JSON.stringify({ action: 'saveProduct', pin: currentPin, nama: nama, harga: harga, kuota: kuota, status: 'OPEN' })
       });
       refreshAll();
     }
 
-    async function updateOrder(orderId, statusBayar, resi) {
+    async function editProductPrompt(id, oldName, oldPrice, oldKuota) {
+      const nama = prompt("Edit Nama Item:", oldName);
+      if(nama === null) return;
+      const harga = prompt("Edit Harga:", oldPrice);
+      if(harga === null) return;
+      const kuota = prompt("Edit Stok/Kuota:", oldKuota);
+      if(kuota === null) return;
+
       await fetch(GAS_URL, {
         method: 'POST',
-        body: JSON.stringify({ action: 'updateOrder', pin: currentPin, orderId: orderId, statusBayar: statusBayar, statusPengiriman: resi ? 'Shipped' : undefined, noResi: resi })
+        body: JSON.stringify({ action: 'saveProduct', pin: currentPin, id: id, nama: nama, harga: harga, kuota: kuota })
       });
       refreshAll();
     }
 
-    function inputResi(orderId) {
-      const resi = prompt("Masukkan Nomor Resi Pengiriman:");
-      if(resi) updateOrder(orderId, null, resi);
+    async function deleteProductPrompt(id) {
+      if(!confirm("HATI-HATI! Yakin ingin menghapus item ini dari katalog?")) return;
+      await fetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'deleteProduct', pin: currentPin, id: id })
+      });
+      refreshAll();
+    }
+
+    async function editOrderPrompt(id) {
+       const order = allOrdersData.find(o => String(o.orderId) === String(id));
+       if(!order) return;
+       const statBayar = prompt("Ubah Status Bayar (Belum Bayar / Lunas):", order.statusBayar);
+       if(statBayar === null) return;
+       const statKirim = prompt("Ubah Status Pengiriman (Pending / Proses / Dikirim):", order.statusPengiriman);
+       if(statKirim === null) return;
+       const resi = prompt("Masukkan No Resi Pengiriman (Opsional / Kosongkan jika -):", order.noResi);
+       if(resi === null) return;
+       
+       await fetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'updateOrder', pin: currentPin, orderId: id, statusBayar: statBayar, statusPengiriman: statKirim, noResi: resi || "-" })
+      });
+      refreshAll();
+    }
+
+    async function deleteOrderPrompt(id) {
+      if(!confirm("HATI-HATI! Yakin ingin menghapus data pesanan ini secara permanen?")) return;
+      await fetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'deleteOrder', pin: currentPin, orderId: id })
+      });
+      refreshAll();
     }
   </script>
 </body>
