@@ -162,9 +162,17 @@
 </div>
 
       <div class="space-y-2">
-        <a id="waConfirmBtn" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 transition">
-          <i data-lucide="message-square" class="w-4 h-4"></i> Konfirmasi via WhatsApp
-        </a>
+        <div class="mt-6 text-left border-t border-slate-800 pt-4">
+  <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+    Upload Bukti Pembayaran
+  </label>
+  <input type="file" id="fileBukti" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-violet-600 file:text-white hover:file:bg-violet-500 cursor-pointer bg-slate-950 p-2 rounded-2xl border border-slate-800">
+  
+  <button type="button" id="btnUploadBukti" onclick="submitBuktiTransfer()" class="w-full mt-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-2xl text-xs transition flex justify-center items-center gap-2">
+    <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+    <span>Kirim Bukti Transfer</span>
+  </button>
+</div>
         <button onclick="location.reload()" class="w-full text-xs text-slate-500 hover:text-slate-300 py-2 transition">Kembali ke Halaman Utama</button>
       </div>
     </div>
@@ -300,11 +308,7 @@
         if(data.success) {
           document.getElementById('payOrderId').innerText = data.orderId;
           document.getElementById('payTotal').innerText = `Rp ${data.totalBayar.toLocaleString('id-ID')}`;
-          
-          // GANTI 6281234567890 DENGAN NOMOR WA KAMU
-          const waMsg = `Halo Admin, saya sudah buat order PO ${data.orderId} senilai Rp ${data.totalBayar.toLocaleString('id-ID')}. Mohon dicek.`;
-          document.getElementById('waConfirmBtn').href = `https://wa.me/6285111335695?text=${encodeURIComponent(waMsg)}`;
-          
+                            
           toggleSection('payment');
         }
       } catch(err) {
@@ -316,6 +320,54 @@
       }
     }
 
+    async function submitBuktiTransfer() {
+  const fileInput = document.getElementById('fileBukti');
+  const btn = document.getElementById('btnUploadBukti');
+  const orderId = document.getElementById('payOrderId').innerText;
+
+  if (!fileInput.files || fileInput.files.length === 0) {
+    alert("Silakan pilih foto bukti transfer terlebih dahulu!");
+    return;
+  }
+
+  const file = fileInput.files[0];
+  btn.disabled = true;
+  btn.innerHTML = `<span>Proses Mengunggah...</span>`;
+
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    const base64Data = e.target.result;
+
+    try {
+      const res = await fetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'uploadProof',
+          orderId: orderId,
+          fileName: file.name,
+          fileBase64: base64Data
+        })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        alert("Bukti transfer berhasil terkirim! Admin akan segera memverifikasi.");
+        location.reload();
+      } else {
+        alert("Gagal mengunggah: " + data.message);
+      }
+    } catch (err) {
+      alert("Terjadi kesalahan koneksi. Silakan coba lagi.");
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = `<i data-lucide="upload-cloud" class="w-4 h-4"></i><span>Kirim Bukti Transfer</span>`;
+      lucide.createIcons();
+    }
+  };
+
+  reader.readAsDataURL(file);
+}
+    
     async function trackOrder() {
       const q = document.getElementById('trackQuery').value;
       if(!q) return alert("Masukkan ID Pesanan atau WhatsApp!");
