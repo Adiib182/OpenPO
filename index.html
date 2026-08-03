@@ -127,94 +127,89 @@
         <div id="paymentBca" class="p-4 rounded-2xl border border-slate-800 bg-slate-950/60 flex items-center justify-between">
           <div>
             <p class="text-[10px] font-bold text-violet-400 uppercase tracking-wider">BANK BCA</p>
-            <p class="font-mono font-bold text-base text-white">455-007-9602</p>
-            <p class="text-[11px] text-slate-400">a.n Garda Purnama Syahda</p>
+            <p class="font-mono text-xl font-bold text-white mt-0.5">455-007-9602</p>
+            <p class="text-xs text-slate-400 mt-1">A/N: Garda Purnama Syahda</p>
           </div>
-          <button type="button" onclick="copyRek()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-2 rounded-xl font-medium transition flex items-center gap-1">
-            <i data-lucide="copy" class="w-3.5 h-3.5"></i> Salin
-          </button>
+          <i data-lucide="building" class="w-8 h-8 text-slate-700"></i>
         </div>
 
         <div id="paymentQris" class="hidden flex flex-col items-center justify-center p-6 rounded-2xl border border-slate-800 bg-slate-950/80 text-center space-y-4">
-  
-  <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-    <i data-lucide="qr-code" class="w-3 h-3"></i>
-    <span>QRIS ALL PAYMENT</span>
-  </div>
-
-  <div class="flex items-center justify-center p-3 bg-white rounded-2xl shadow-xl shadow-violet-500/10 border border-slate-200">
-    <img id="qrisImg" src="https://i.ibb.co.com/ccfx2QW9/IMG-20260801-WA0000.jpg" alt="QRIS Toko" class="w-44 h-44 object-contain rounded-lg">
-  </div>
-
-  <p class="text-[11px] text-slate-400 max-w-xs leading-relaxed">
-    Screenshot atau scan gambar QRIS di atas melalui m-Banking atau E-Wallet pilihanmu.
-  </p>
-
-  <div class="w-full pt-3 border-t border-slate-800/80 flex flex-wrap justify-center items-center gap-1.5 text-[9px] font-bold text-slate-400">
-    <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg">BCA</span>
-    <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg">Mandiri</span>
-    <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg">GoPay</span>
-    <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg">OVO</span>
-    <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg">DANA</span>
-    <span class="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg">ShopeePay</span>
-  </div>
- </div>
-</div>
-
-      <div class="space-y-2">
-        <a id="waConfirmBtn" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 transition">
-          <i data-lucide="message-square" class="w-4 h-4"></i> Konfirmasi via WhatsApp
-        </a>
-        <button onclick="location.reload()" class="w-full text-xs text-slate-500 hover:text-slate-300 py-2 transition">Kembali ke Halaman Utama</button>
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <i data-lucide="qr-code" class="w-3 h-3"></i> <span>QRIS ALL PAYMENT</span>
+          </div>
+          <div class="flex items-center justify-center p-3 bg-white rounded-2xl shadow-xl shadow-violet-500/10 border border-slate-200">
+            <img id="qrisImg" src="https://i.ibb.co.com/ccfx2QW9/IMG-20260801-WA0000.jpg" alt="QRIS Toko" class="w-44 h-44 object-contain rounded-lg">
+          </div>
+          <p class="text-[11px] text-slate-400 max-w-xs leading-relaxed">Screenshot atau scan gambar QRIS di atas melalui m-Banking atau E-Wallet pilihanmu.</p>
+        </div>
       </div>
+
+      <div class="mt-6 p-4 border border-slate-800 bg-slate-950/60 rounded-2xl text-left">
+        <p class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Upload Bukti Transfer</p>
+        <input type="file" id="fileBukti" accept="image/*" class="w-full text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-violet-500/10 file:text-violet-400 hover:file:bg-violet-500/20 mb-3 text-xs outline-none">
+        <button onclick="uploadBukti()" id="btnUploadBukti" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2">
+          <i data-lucide="upload" class="w-4 h-4"></i> Konfirmasi Pembayaran
+        </button>
+      </div>
+
+      <button onclick="window.location.reload()" class="mt-6 text-xs text-slate-500 hover:text-slate-300 underline font-medium">Selesai & Kembali ke Home</button>
     </div>
 
     <div id="section-track" class="hidden glass-card bg-slate-900/80 border border-slate-800/80 p-6 md:p-8 rounded-3xl shadow-2xl">
-      <h2 class="text-xl font-bold text-white mb-1">Cek Status Pesanan</h2>
-      <p class="text-xs text-slate-400 mb-6">Masukkan WhatsApp atau ID Pesanan kamu (misal: PO-123456)</p>
+      <div class="flex justify-between items-center mb-6">
+        <div>
+          <h2 class="text-xl md:text-2xl font-black text-white">Lacak Pesanan</h2>
+          <p class="text-xs text-slate-400 mt-1">Pantau status pembayaran & resi kurir.</p>
+        </div>
+        <button onclick="toggleSection('form')" class="w-8 h-8 flex items-center justify-center bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-full transition">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
 
       <div class="flex gap-2 mb-6">
-        <input type="text" id="trackQuery" placeholder="PO-XXXXXX / 812..." class="w-full bg-slate-950/80 border border-slate-800 focus:border-violet-500 rounded-2xl p-3.5 text-sm text-white outline-none">
-        <button onclick="trackOrder()" class="bg-violet-600 hover:bg-violet-500 text-white px-5 rounded-2xl font-bold text-sm transition shrink-0">Cek</button>
+        <input type="text" id="trackInput" placeholder="Masukkan Order ID / Nomor WA" class="flex-1 bg-slate-950/80 border border-slate-800 focus:border-violet-500 rounded-2xl p-3.5 text-sm text-white placeholder:text-slate-600 outline-none transition">
+        <button onclick="trackOrder()" class="bg-violet-600 hover:bg-violet-500 text-white px-5 rounded-2xl transition shadow-lg flex items-center justify-center">
+          <i data-lucide="search" class="w-5 h-5"></i>
+        </button>
       </div>
 
-      <div id="trackResult"></div>
-
-      <button onclick="toggleSection('form')" class="mt-6 text-xs text-slate-400 hover:text-white flex items-center gap-1.5 transition">
-        <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Kembali ke Form Order
-      </button>
-    </div>
-
-    <div class="mt-4 glass-card bg-slate-900/60 border border-slate-800/80 p-4 rounded-2xl flex items-center justify-between text-xs">
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 flex items-center justify-center shrink-0">
-          <i data-lucide="help-circle" class="w-5 h-5"></i>
-        </div>
-        <div>
-          <p class="font-bold text-white">Ada kendala / salah isi data?</p>
-          <p class="text-slate-400 text-[11px]">Hubungi Admin via WhatsApp untuk koreksi pesanan.</p>
-        </div>
+      <div id="trackResult" class="space-y-3">
+        <p class="text-xs text-slate-500 text-center py-4">Masukkan data di atas untuk mencari.</p>
       </div>
-      <a href="https://wa.me/6285111335695?text=Halo%20Admin,%20saya%20mau%20komplain%20/%20minta%20bantuan%20terkait%20pesanan" target="_blank" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3.5 py-2 rounded-xl flex items-center gap-1 shrink-0 transition">
-        <span>Chat Admin</span>
-      </a>
     </div>
 
   </main>
 
   <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbzn5B5-4fIvMo5D6pAHuJgpx3mJIXw9apHOFiCU-RfiJotVg8-nou3rPyBFOrPEobU1/exec";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbyQwOJA7oJQhvy0rQ98EaJMnE34fgj_UL5wFIn2lm07wJJVsAd42pXskY9LXNMPhXn8/exec";
+    let catalog = [];
 
-    window.addEventListener('DOMContentLoaded', () => {
-      lucide.createIcons();
-      loadPublicProducts();
-    });
+    // Init Icons
+    lucide.createIcons();
+
+    // Load Products
+    fetch(GAS_URL + "?action=getPublicProducts")
+      .then(res => res.json())
+      .then(data => {
+        if(data.success) {
+          catalog = data.products;
+          const select = document.getElementById('produk');
+          if(catalog.length === 0) {
+            select.innerHTML = '<option value="">Maaf, PO Sedang Kosong/Tutup</option>';
+            document.getElementById('btnSubmit').disabled = true;
+          } else {
+            select.innerHTML = '<option value="" disabled selected>Pilih Item...</option>' + catalog.map(p => {
+              return `<option value="${p.nama}" data-harga="${p.harga}">${p.nama} — Rp ${p.harga.toLocaleString('id-ID')} (Sisa: ${p.sisa} Slot)</option>`;
+            }).join('');
+          }
+        }
+      });
 
     function toggleSection(sec) {
       document.getElementById('section-form').classList.add('hidden');
       document.getElementById('section-payment').classList.add('hidden');
       document.getElementById('section-track').classList.add('hidden');
-      document.getElementById(`section-${sec}`).classList.remove('hidden');
+      document.getElementById('section-' + sec).classList.remove('hidden');
     }
 
     function switchPaymentMethod(method) {
@@ -226,104 +221,118 @@
       if (method === 'bca') {
         bcaContent.classList.remove('hidden');
         qrisContent.classList.add('hidden');
-        
         bcaBtn.className = "py-2 px-3 text-xs font-bold rounded-xl bg-violet-600 text-white shadow transition-all duration-200 flex items-center justify-center gap-1.5";
         qrisBtn.className = "py-2 px-3 text-xs font-bold rounded-xl text-slate-400 hover:text-white transition-all duration-200 flex items-center justify-center gap-1.5";
       } else {
         bcaContent.classList.add('hidden');
         qrisContent.classList.remove('hidden');
-
         qrisBtn.className = "py-2 px-3 text-xs font-bold rounded-xl bg-violet-600 text-white shadow transition-all duration-200 flex items-center justify-center gap-1.5";
         bcaBtn.className = "py-2 px-3 text-xs font-bold rounded-xl text-slate-400 hover:text-white transition-all duration-200 flex items-center justify-center gap-1.5";
-      }
-    }
-
-    async function loadPublicProducts() {
-      const select = document.getElementById('produk');
-      const btn = document.getElementById('btnSubmit');
-
-      try {
-        const res = await fetch(`${GAS_URL}?action=getPublicProducts`);
-        const data = await res.json();
-
-        if (data.products && data.products.length > 0) {
-          select.innerHTML = data.products.map(p => {
-            const isFull = p.sisa <= 0;
-            return `<option value="${p.nama}" data-harga="${p.harga}" ${isFull ? 'disabled' : ''}>
-              ${p.nama} — Rp ${p.harga.toLocaleString('id-ID')} ${isFull ? ' (KUOTA HABIS 🚫)' : ` (Sisa ${p.sisa} Slot 🔥)`}
-            </option>`;
-          }).join('');
-
-          // Cek jika produk pertama habis
-          const firstOption = select.options[0];
-          if (firstOption && firstOption.disabled) {
-            btn.disabled = true;
-            btn.innerText = "Slot PO Penuh";
-          } else {
-            btn.disabled = false;
-          }
-        } else {
-          select.innerHTML = "<option disabled selected>🚫 PO SEDANG DITUTUP SAAT INI 🚫</option>";
-          btn.disabled = true;
-          btn.innerText = "Pre-Order Ditutup";
-        }
-      } catch (e) {
-        select.innerHTML = "<option>Gagal memuat katalog produk</option>";
       }
     }
 
     async function submitOrder(e) {
       e.preventDefault();
       const btn = document.getElementById('btnSubmit');
-      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Memproses Order...`;
+      btn.innerHTML = `<span class="animate-pulse">Memproses...</span>`;
       btn.disabled = true;
 
-      const select = document.getElementById('produk');
-      const selectedOption = select.options[select.selectedIndex];
-      const harga = selectedOption.getAttribute('data-harga');
+      const prodSelect = document.getElementById('produk');
+      const harga = prodSelect.options[prodSelect.selectedIndex].getAttribute('data-harga');
 
       const payload = {
-        action: 'createOrder',
-        produk: selectedOption.value,
-        harga: harga,
-        jumlah: document.getElementById('jumlah').value,
+        action: "createOrder",
         nama: document.getElementById('nama').value,
         wa: document.getElementById('wa').value,
         email: document.getElementById('email').value,
-        catatan: document.getElementById('catatan').value
+        catatan: document.getElementById('catatan').value,
+        produk: prodSelect.value,
+        jumlah: document.getElementById('jumlah').value,
+        harga: harga
       };
 
       try {
-        const res = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) });
+        const res = await fetch(GAS_URL, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
         const data = await res.json();
-
+        
         if(data.success) {
           document.getElementById('payOrderId').innerText = data.orderId;
           document.getElementById('payTotal').innerText = `Rp ${data.totalBayar.toLocaleString('id-ID')}`;
-          
-          // GANTI 6281234567890 DENGAN NOMOR WA KAMU
-          const waMsg = `Halo Admin, saya sudah buat order PO ${data.orderId} senilai Rp ${data.totalBayar.toLocaleString('id-ID')}. Mohon dicek.`;
-          document.getElementById('waConfirmBtn').href = `https://wa.me/6285111335695?text=${encodeURIComponent(waMsg)}`;
-          
           toggleSection('payment');
+        } else {
+          alert("Gagal: " + data.message);
+          btn.innerHTML = `<span>Checkout Order</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+          btn.disabled = false;
+          lucide.createIcons();
         }
       } catch(err) {
-        alert("Terjadi masalah jaringan, silakan coba lagi.");
-      } finally {
-        btn.innerHTML = `<span>Checkout Order</span><i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+        alert("Terjadi kesalahan jaringan.");
+        btn.innerHTML = `<span>Checkout Order</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
         btn.disabled = false;
         lucide.createIcons();
       }
     }
 
+    async function uploadBukti() {
+      const fileInput = document.getElementById('fileBukti');
+      if (fileInput.files.length === 0) return alert('Silakan pilih file bukti transfer/screenshot terlebih dahulu!');
+      
+      const file = fileInput.files[0];
+      const btn = document.getElementById('btnUploadBukti');
+      btn.innerHTML = `<span class="animate-pulse">Mengupload...</span>`;
+      btn.disabled = true;
+
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        const base64Data = e.target.result.split(',')[1];
+        const orderId = document.getElementById('payOrderId').innerText;
+
+        try {
+          const res = await fetch(GAS_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+              action: 'uploadBukti',
+              orderId: orderId,
+              fileName: file.name,
+              mimeType: file.type,
+              fileData: base64Data
+            })
+          });
+          const data = await res.json();
+          if (data.success) {
+            alert('Bukti transfer berhasil dikirim. Menunggu konfirmasi admin.');
+            btn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> Bukti Terkirim`;
+            btn.classList.replace('bg-emerald-600', 'bg-slate-700');
+            btn.classList.replace('hover:bg-emerald-500', 'cursor-not-allowed');
+            lucide.createIcons();
+          } else {
+            alert('Gagal: ' + data.message);
+            btn.innerHTML = `<i data-lucide="upload" class="w-4 h-4"></i> Upload Ulang`;
+            btn.disabled = false;
+            lucide.createIcons();
+          }
+        } catch (err) {
+          alert('Error saat mengupload. Coba lagi.');
+          btn.innerHTML = `<i data-lucide="upload" class="w-4 h-4"></i> Upload Ulang`;
+          btn.disabled = false;
+          lucide.createIcons();
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
     async function trackOrder() {
-      const q = document.getElementById('trackQuery').value;
-      if(!q) return alert("Masukkan ID Pesanan atau WhatsApp!");
+      const query = document.getElementById('trackInput').value;
+      if(!query) return alert("Masukkan ID Pesanan atau WhatsApp!");
+      
       const resDiv = document.getElementById('trackResult');
       resDiv.innerHTML = "<p class='text-xs text-slate-500'>Mencari data pesanan...</p>";
 
       try {
-        const res = await fetch(`${GAS_URL}?action=trackOrder&query=${q}`);
+        const res = await fetch(GAS_URL + "?action=trackOrder&query=" + encodeURIComponent(query));
         const data = await res.json();
 
         if(data.orders && data.orders.length > 0) {
@@ -336,19 +345,61 @@
               <p class="text-slate-300"><b>Item:</b> ${o.produk} (${o.jumlah}x)</p>
               <p class="text-slate-400"><b>Status Pengiriman:</b> <span class="text-white">${o.statusPengiriman}</span></p>
               <p class="text-slate-400"><b>Resi:</b> ${o.noResi !== '-' ? `<span class="text-emerald-400 font-mono font-bold">${o.noResi}</span>` : 'Belum Terbit'}</p>
+              
+              ${o.statusBayar !== 'Lunas' ? `
+                <div class="mt-3 p-3 bg-slate-900 border border-slate-800 rounded-xl space-y-2">
+                   <p class="text-[10px] text-slate-400 font-bold uppercase">Kirim Bukti Pembayaran:</p>
+                   <input type="file" id="trackUpload_${o.orderId}" accept="image/*" class="w-full text-[10px] text-slate-400 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:bg-violet-500/10 file:text-violet-400">
+                   <button onclick="uploadBuktiTrack('${o.orderId}')" id="btnTrackUp_${o.orderId}" class="w-full bg-violet-600 py-1.5 rounded-lg text-white font-bold text-[10px]">Kirim Bukti</button>
+                </div>
+              ` : ''}
             </div>
           `).join('');
         } else {
-          resDiv.innerHTML = "<p class='text-xs text-rose-400'>Pesanan tidak ditemukan.</p>";
+          resDiv.innerHTML = "<p class='text-xs text-rose-400 bg-rose-500/10 p-3 rounded-xl border border-rose-500/20'>Data pesanan tidak ditemukan. Cek kembali ID / WA kamu.</p>";
         }
       } catch(e) {
-        resDiv.innerHTML = "<p class='text-xs text-rose-400'>Gagal mengambil data.</p>";
+        resDiv.innerHTML = "<p class='text-xs text-rose-400'>Terjadi kesalahan koneksi.</p>";
       }
     }
 
-    function copyRek() {
-      navigator.clipboard.writeText("1234567890");
-      alert("Nomor rekening berhasil disalin!");
+    async function uploadBuktiTrack(orderId) {
+      const fileInput = document.getElementById('trackUpload_' + orderId);
+      if (!fileInput.files.length) return alert('Pilih gambar bukti transfer terlebih dahulu!');
+      
+      const file = fileInput.files[0];
+      const btn = document.getElementById('btnTrackUp_' + orderId);
+      btn.innerText = 'Mengupload...';
+      btn.disabled = true;
+
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        const base64Data = e.target.result.split(',')[1];
+        try {
+          const res = await fetch(GAS_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+              action: 'uploadBukti', orderId: orderId,
+              fileName: file.name, mimeType: file.type, fileData: base64Data
+            })
+          });
+          const data = await res.json();
+          if (data.success) {
+            alert('Bukti berhasil dikirim!');
+            btn.innerText = 'Berhasil Terkirim';
+            btn.classList.replace('bg-violet-600', 'bg-slate-700');
+          } else {
+            alert('Gagal: ' + data.message);
+            btn.innerText = 'Upload Ulang';
+            btn.disabled = false;
+          }
+        } catch (err) {
+          alert('Error upload');
+          btn.innerText = 'Upload Ulang';
+          btn.disabled = false;
+        }
+      };
+      reader.readAsDataURL(file);
     }
   </script>
 </body>
