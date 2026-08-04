@@ -178,17 +178,28 @@
       </div>
     </div>
 
-      <!-- Modal QRIS (Ditambahkan) -->
+      <!-- Modal QRIS (Versi Perbaikan UI) -->
+    <!-- Area latar belakang gelap. Jika diklik, akan menjalankan closeModalQris() -->
     <div id="modalQris" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/90 backdrop-blur-sm p-4 transition-all" onclick="closeModalQris()">
+      
+      <!-- Kotak putih modal. event.stopPropagation() mencegah modal tertutup jika area putih ini diklik -->
       <div class="relative max-w-sm w-full bg-white p-4 rounded-3xl shadow-2xl transform scale-100" onclick="event.stopPropagation()">
-        <button onclick="closeModalQris()" class="absolute -top-14 right-0 w-10 h-10 bg-slate-800 text-white rounded-full flex items-center justify-center hover:bg-rose-500 border border-slate-600 transition-all shadow-lg">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-        <div class="flex items-center justify-center p-2">
-          <img src="https://i.ibb.co.com/ccfx2QW9/IMG-20260801-WA0000.jpg" alt="QRIS Toko Zoom" class="w-full h-auto object-contain rounded-xl">
+        
+        <!-- Header Modal & Tombol Close (Sekarang di dalam kotak) -->
+        <div class="flex justify-between items-center mb-3 px-1">
+          <span class="text-sm font-extrabold text-slate-800">Scan QRIS</span>
+          <button onclick="closeModalQris()" class="w-8 h-8 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center hover:bg-rose-100 hover:text-rose-600 transition-all">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
         </div>
-        <p class="text-center text-xs font-bold text-slate-800 mt-4 bg-emerald-100 p-2 rounded-lg">
-          Silakan scan QRIS di atas untuk membayar
+
+        <div class="flex items-center justify-center p-2">
+          <!-- max-h-[60vh] memastikan tinggi gambar maksimal 60% dari tinggi layar perangkat -->
+          <img src="https://i.ibb.co.com/ccfx2QW9/IMG-20260801-WA0000.jpg" alt="QRIS Toko Zoom" class="w-full max-h-[60vh] object-contain rounded-xl border border-slate-200">
+        </div>
+        
+        <p class="text-center text-xs font-bold text-slate-800 mt-3 bg-emerald-100 p-2.5 rounded-xl border border-emerald-200">
+          Silakan scan QRIS di atas atau simpan ke galeri.
         </p>
       </div>
     </div>
