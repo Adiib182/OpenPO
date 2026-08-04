@@ -52,21 +52,18 @@
 
       <form id="poForm" onsubmit="submitOrder(event)" class="space-y-4">
         <div>
-          <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Pilih Item Drop</label>
-          <div class="relative">
-            <select id="produk" class="w-full bg-slate-950/80 border border-slate-800 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 rounded-2xl p-3.5 text-sm text-white outline-none appearance-none transition-all" required>
-              <option value="">Mengambil katalog terbaru...</option>
-            </select>
-            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-4 top-4 pointer-events-none"></i>
+          <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Pilih Menu (Bisa Lebih Dari Satu)</label>
+          <div id="katalogProduk" class="space-y-2 bg-slate-950/80 border border-slate-800 p-3 rounded-2xl max-h-64 overflow-y-auto">
+            <p class="text-sm text-slate-400">Mengambil katalog terbaru...</p>
+          </div>
+          <div class="mt-2 flex justify-between items-center bg-slate-900 border border-slate-800 p-3 rounded-2xl">
+            <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Total Item:</span>
+            <span id="labelTotalHarga" class="text-lg font-black text-emerald-400">Rp 0</span>
           </div>
         </div>
 
-        <div class="grid grid-cols-3 gap-3">
-          <div class="col-span-1">
-            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Jumlah</label>
-            <input type="number" id="jumlah" value="1" min="1" class="w-full bg-slate-950/80 border border-slate-800 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 rounded-2xl p-3.5 text-sm text-white outline-none transition-all text-center font-bold" required>
-          </div>
-          <div class="col-span-2">
+        <div class="grid grid-cols-1 gap-3 mt-4">
+          <div>
             <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Nama Lengkap</label>
             <input type="text" id="nama" placeholder="Sesuai KTP/Panggilan" class="w-full bg-slate-950/80 border border-slate-800 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 rounded-2xl p-3.5 text-sm text-white placeholder:text-slate-600 outline-none transition-all" required>
           </div>
@@ -219,17 +216,50 @@
       .then(data => {
         if(data.success) {
           catalog = data.products;
-          const select = document.getElementById('produk');
+          const container = document.getElementById('katalogProduk');
           if(catalog.length === 0) {
-            select.innerHTML = '<option value="">Maaf, PO Sedang Kosong/Tutup</option>';
+            container.innerHTML = '<p class="text-sm text-rose-400 text-center py-4">Maaf, PO Sedang Kosong/Tutup</p>';
             document.getElementById('btnSubmit').disabled = true;
           } else {
-            select.innerHTML = '<option value="" disabled selected>Pilih Item...</option>' + catalog.map(p => {
-              return `<option value="${p.nama}" data-harga="${p.harga}">${p.nama} — Rp ${p.harga.toLocaleString('id-ID')} (Sisa: ${p.sisa} Slot)</option>`;
-            }).join('');
+            container.innerHTML = catalog.map((p, i) => `
+              <div class="flex justify-between items-center bg-slate-950 p-3 rounded-xl border border-slate-800 hover:border-violet-500/50 transition">
+                <div>
+                  <p class="text-sm font-bold text-white">${p.nama}</p>
+                  <p class="text-xs text-slate-400">Rp ${p.harga.toLocaleString('id-ID')} <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded ml-1 font-bold">Sisa: ${p.sisa}</span></p>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <button type="button" onclick="updateQty(${i}, -1)" class="w-7 h-7 bg-slate-800 rounded-lg flex items-center justify-center text-white hover:bg-slate-700 transition">-</button>
+                  <input type="number" id="qty_${i}" value="0" min="0" max="${p.sisa}" readonly class="w-8 bg-transparent text-center text-sm font-bold text-white outline-none">
+                  <button type="button" onclick="updateQty(${i}, 1)" class="w-7 h-7 bg-violet-600 rounded-lg flex items-center justify-center text-white hover:bg-violet-500 transition">+</button>
+                </div>
+              </div>
+            `).join('');
           }
         }
       });
+
+    // Fungsi Keranjang Baru
+    function updateQty(index, change) {
+      const input = document.getElementById(`qty_${index}`);
+      let newVal = parseInt(input.value) + change;
+      const max = parseInt(input.getAttribute('max'));
+      if (newVal < 0) newVal = 0;
+      if (newVal > max) {
+         alert("Melebihi sisa stok yang tersedia!");
+         newVal = max;
+      }
+      input.value = newVal;
+      hitungTotalCart();
+    }
+
+    function hitungTotalCart() {
+      let total = 0;
+      catalog.forEach((p, i) => {
+        const qty = parseInt(document.getElementById(`qty_${i}`).value);
+        total += p.harga * qty;
+      });
+      document.getElementById('labelTotalHarga').innerText = 'Rp ' + total.toLocaleString('id-ID');
+    }
 
     function toggleSection(sec) {
       document.getElementById('section-form').classList.add('hidden');
@@ -259,12 +289,26 @@
 
     async function submitOrder(e) {
       e.preventDefault();
+      
+      const cartItems = [];
+      let totalHarga = 0;
+      let totalJumlah = 0;
+
+      // Kumpulkan data menu
+      catalog.forEach((p, i) => {
+        const qty = parseInt(document.getElementById(`qty_${i}`).value);
+        if (qty > 0) {
+          cartItems.push({ nama: p.nama, qty: qty });
+          totalHarga += p.harga * qty;
+          totalJumlah += qty;
+        }
+      });
+
+      if (cartItems.length === 0) return alert("Silakan pilih minimal 1 menu untuk dipesan!");
+
       const btn = document.getElementById('btnSubmit');
       btn.innerHTML = `<span class="animate-pulse">Memproses...</span>`;
       btn.disabled = true;
-
-      const prodSelect = document.getElementById('produk');
-      const harga = prodSelect.options[prodSelect.selectedIndex].getAttribute('data-harga');
 
       const payload = {
         action: "createOrder",
@@ -272,9 +316,9 @@
         wa: document.getElementById('wa').value,
         email: document.getElementById('email').value,
         catatan: document.getElementById('catatan').value,
-        produk: prodSelect.value,
-        jumlah: document.getElementById('jumlah').value,
-        harga: harga
+        cart: cartItems, 
+        totalHarga: totalHarga,
+        totalJumlah: totalJumlah
       };
 
       try {
